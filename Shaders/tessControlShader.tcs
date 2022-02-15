@@ -1,0 +1,60 @@
+// first step of tesselation shader
+// tesselation control shader add/deletes control points and determines the tesselatation level
+// patch has three control points here (three vertices for each triangle)
+
+
+#version 450 core
+layout (vertices =3) out;
+
+
+// vectors stored as arrays - each patch has three vertices, each with an xyz pos and xyz norm value 
+//posVS = position from Vertex Shader, posTC = position from this Tesselation Control shader
+
+in vec3 posVS[] ;
+
+out vec3 posTC[] ;
+
+uniform vec3 viewPos;
+float GetTessLevel(float distance0, float distance1);
+void main()
+{
+  // tesselation level; we will find this automatically later but for now hardcoded value
+   int tessLevel = 4;
+
+   // gpu can calculate each control point in parallel
+   // tesselation level same for entire patch so only need to set it once (for the first control point)
+   // gl_invocation called for each control point
+   if (gl_InvocationID==0)
+   {  
+          float eyetovertexdist0 = distance(viewPos,posVS[0]);
+          float eyetovertexdist1 = distance(viewPos,posVS[1]);
+          float eyetovertexdist2 = distance(viewPos,posVS[2]);
+
+		  // Calculate the tessellation levels
+          gl_TessLevelOuter[0] = GetTessLevel(eyetovertexdist1,eyetovertexdist2) ; 
+          gl_TessLevelOuter[1] = GetTessLevel(eyetovertexdist2,eyetovertexdist0) ; 
+          gl_TessLevelOuter[2] = GetTessLevel(eyetovertexdist0,eyetovertexdist1) ; 
+          gl_TessLevelInner[0] = gl_TessLevelOuter[2];
+
+   }
+
+   // pass through position and normal information
+   posTC[gl_InvocationID]  = posVS[gl_InvocationID] ;
+
+}
+
+float GetTessLevel(float distance0, float distance1){
+    float avg = (distance0+distance1)/2;
+
+    if(avg < 4){
+        return 5;    
+    }else if(avg < 6){
+        return 4; 
+    }else if(avg < 8){
+        return 3; 
+    }else if(avg < 10){
+        return 2; 
+    }else{
+        return 1; 
+    }
+}

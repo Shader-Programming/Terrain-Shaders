@@ -62,5 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp-vc140-mt.dll" />
+    <None Include="..\Shaders\plainFrag.fs" />
+    <None Include="..\Shaders\plainVert.vs" />
+    <None Include="..\Shaders\tessEvaluationShader.tes" />
+    <None Include="..\Shaders\Norms.gs" />
+    <None Include="..\Shaders\tessControlShader.tcs" />
   </ItemGroup>
 </Project>
