@@ -17,6 +17,5 @@ out vec3 posVS ;
 void main()
 {
     TexCoords = aTexCoords;  
-    posVS = vec3(model * vec4(aPos, 1.0));
-    gl_Position = projection * view * model *vec4(posVS, 1.0); 
+    posVS = (model * vec4(aPos, 1.0)).xyz; 
 }

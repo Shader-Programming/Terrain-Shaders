@@ -30,8 +30,8 @@ void main()
    vec3 posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
-   gl_Position = projection * view * model *vec4(posES, 1.0); 
-   //gl_Position = vec4(posES, 1.0);
+   //gl_Position = projection * view * model *vec4(posES, 1.0); 
+   gl_Position = vec4(posES, 1.0);
 } 
 
 
