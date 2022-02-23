@@ -39,6 +39,8 @@ bool firstMouse = true;
 //arrays
 unsigned int terrainVAO;
 
+unsigned int heightmap;
+
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -73,14 +75,17 @@ int main()
 
 	// simple vertex and fragment shader - add your own tess and geo shader
 	Shader shader("..\\shaders\\plainVert.vs", "..\\shaders\\plainFrag.fs", "..\\shaders\\Norms.gs", "..\\shaders\\tessControlShader.tcs", "..\\shaders\\tessEvaluationShader.tes");
-
+	shader.use();
 
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
 	Terrain terrain(50, 50,10);
 	terrainVAO = terrain.getVAO();
 
 	
-
+	heightmap = loadTexture("..\\Resources\\heightMap.jpg");
+	shader.setInt("heightmap", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, heightmap);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -95,7 +100,7 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1200.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
-	    shader.use();
+		
 	    shader.setMat4("projection", projection);
 		shader.setMat4("view", view);
 		shader.setMat4("model", model);

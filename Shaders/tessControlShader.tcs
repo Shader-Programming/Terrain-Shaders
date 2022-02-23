@@ -11,8 +11,10 @@ layout (vertices =3) out;
 //posVS = position from Vertex Shader, posTC = position from this Tesselation Control shader
 
 in vec3 posVS[] ;
+in vec2 TexCoordsVS[];
 
 out vec3 posTC[] ;
+out vec2 TexCoordsTC[];
 
 uniform vec3 viewPos;
 float GetTessLevel(float distance0, float distance1);
@@ -38,8 +40,9 @@ void main()
 
    }
 
-   // pass through position and normal information
+   // pass through position and tex information
    posTC[gl_InvocationID]  = posVS[gl_InvocationID] ;
+   TexCoordsTC[gl_InvocationID]  = TexCoordsVS[gl_InvocationID] ;
 
 }
 

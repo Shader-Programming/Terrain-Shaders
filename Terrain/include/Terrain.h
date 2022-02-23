@@ -16,7 +16,6 @@ public:
 	unsigned int getVAO();
 	int getSize();
 	
-	
 private:
 	std::vector<float> vertices;
 	unsigned int VAO, VBO;
