@@ -18,7 +18,7 @@ uniform mat4 projection;
 in vec3 posTC[] ;
 
 // pass along the interpolated values
-out vec3 posES[] ;
+out vec3 posES ;
 
 
 
@@ -27,11 +27,11 @@ void main()
     // interpolate the normal and xyz position using the linear interpolation function
     // use 3D because they are in three dimensions; 2D also included for uv texture coordinates
 
-   vec3 posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
+   posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
-   //gl_Position = projection * view * model *vec4(posES, 1.0); 
-   gl_Position = vec4(posES, 1.0);
+   gl_Position = projection * view * vec4(posES, 1.0); 
+   //gl_Position = vec4(posES, 1.0);
 } 
 
 

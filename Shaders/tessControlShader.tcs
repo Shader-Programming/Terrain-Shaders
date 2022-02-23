@@ -46,13 +46,13 @@ void main()
 float GetTessLevel(float distance0, float distance1){
     float avg = (distance0+distance1)/2;
 
-    if(avg < 4){
+    if(avg < 15){
         return 5;    
-    }else if(avg < 6){
+    }else if(avg < 20){
         return 4; 
-    }else if(avg < 8){
+    }else if(avg < 30){
         return 3; 
-    }else if(avg < 10){
+    }else if(avg < 50){
         return 2; 
     }else{
         return 1; 

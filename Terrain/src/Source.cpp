@@ -46,8 +46,8 @@ float lastFrame = 0.0f;
 int main()
 {
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3.5);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3.5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "IMAT3907", NULL, NULL);
 	if (window == NULL)
@@ -103,7 +103,7 @@ int main()
 	
 		glBindVertexArray(terrainVAO);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawArrays(GL_TRIANGLES, 0, terrain.getSize());
+		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
