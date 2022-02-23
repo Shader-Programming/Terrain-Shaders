@@ -23,6 +23,7 @@ in vec2 TexCoordsTC[];
 // pass along the interpolated values
 out vec3 posES ;
 out vec2 TexCoordsES;
+out vec3 normES;
 
 
 
@@ -30,15 +31,23 @@ void main()
 {
     // interpolate the normal and xyz position using the linear interpolation function
     // use 3D because they are in three dimensions; 2D also included for uv texture coordinates
-
    posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
    TexCoordsES = interpolate2D(TexCoordsTC[0], TexCoordsTC[1], TexCoordsTC[2]) ;
 
-   // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
 
+   // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
+   float scale = 50;
    float height = texture(heightmap,TexCoordsES).r;
-   posES.y = height*100;
+   posES.y = height*scale;
    gl_Position = projection * view * vec4(posES, 1.0); 
+
+   float right = (textureOffset(heightmap,TexCoordsES,ivec2(1,0)).r)*scale;
+   float left = (textureOffset(heightmap,TexCoordsES,ivec2(-1,0)).r)*scale;
+
+   float up = (textureOffset(heightmap,TexCoordsES,ivec2(0,1)).r)*scale;
+   float down = (textureOffset(heightmap,TexCoordsES,ivec2(0,-1)).r)*scale;
+
+   normES = normalize(vec3((left-right),2.0,(up-down)));
 
    //gl_Position = vec4(posES, 1.0);
 } 

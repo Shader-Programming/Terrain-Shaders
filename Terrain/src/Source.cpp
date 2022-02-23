@@ -27,6 +27,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 unsigned int loadTexture(char const * path);
+void SetUniforms(Shader& shader);
 //unsigned int loadTexture2(char const * path);
 void setVAO(vector <float> vertices);
 
@@ -86,7 +87,7 @@ int main()
 	shader.setInt("heightmap", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, heightmap);
-
+	SetUniforms(shader);
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -107,7 +108,7 @@ int main()
 		shader.setVec3("viewPos", camera.Position);
 	
 		glBindVertexArray(terrainVAO);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
 
 		glfwSwapBuffers(window);
@@ -211,6 +212,20 @@ unsigned int loadTexture(char const * path)
 	}
 
 	return textureID;
+}
+
+void SetUniforms(Shader& shader) {
+	shader.use();
+	//light properties
+	shader.setVec3("dirlight.direction", glm::vec3(.7f, -.6f, .2f));
+	shader.setVec3("dirlight.ambient", 0.5f, 0.5f, 0.5f);
+	shader.setVec3("dirlight.diffuse", 0.55f, 0.55f, 0.55f);
+	shader.setVec3("dirlight.specular", 0.6f, 0.6f, 0.6f);
+	//material properties
+	shader.setVec3("mat.ambient", 0.5, 0.5, 0.5);
+	shader.setVec3("mat.diffuse", 0.396, 0.741, 0.691);
+	shader.setVec3("mat.specular", 0.297f, 0.308f, 0.306f);
+	shader.setFloat("mat.shininess", 0.9f);
 }
 
 
