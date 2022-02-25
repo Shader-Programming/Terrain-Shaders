@@ -13,6 +13,8 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2) ;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float scale;
+uniform vec3 viewPos ;
 
 uniform sampler2D heightmap;
 
@@ -24,6 +26,7 @@ in vec2 TexCoordsTC[];
 out vec3 posES ;
 out vec2 TexCoordsES;
 out vec3 normES;
+out float visibilityES;
 
 
 
@@ -36,7 +39,6 @@ void main()
 
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
-   float scale = 50;
    float height = texture(heightmap,TexCoordsES).r;
    posES.y = height*scale;
    gl_Position = projection * view * vec4(posES, 1.0); 
@@ -48,8 +50,17 @@ void main()
    float down = (textureOffset(heightmap,TexCoordsES,ivec2(0,-1)).r)*scale;
 
    normES = normalize(vec3((left-right),2.0,(up-down)));
+   
 
-   //gl_Position = vec4(posES, 1.0);
+
+   //fog stuff
+
+   float G = 1.2;
+   float density = 0.003;
+
+   float dist = distance(viewPos,posES);
+   visibilityES = exp(-pow((dist*density),G));
+   visibilityES = clamp(visibilityES,0.0,1.0);
 } 
 
 

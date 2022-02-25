@@ -1,4 +1,5 @@
 #include "Terrain.h"
+#include "TextureController.h"
 
 
 //Terrain constructors
@@ -103,5 +104,22 @@ void Terrain::makeVertex(int x, int y, std::vector<float> *vertices) {
 	vertices->push_back((float)x / (width*stepSize));
 	vertices->push_back((float)y / (height*stepSize));
 
+
+}
+
+void Terrain::AssignTerrainTextures(char const* path0, char const* path1, char const* path2, char const* path3) {
+	unsigned int tex0, tex1, tex2, tex3;
+	tex0 = TextureController::LoadTexture(path0);
+	tex1 = TextureController::LoadTexture(path1);
+	tex2 = TextureController::LoadTexture(path2);
+	tex3 = TextureController::LoadTexture(path3);
+
+	TextureController::AssignTexture(tex0, 0, shader, "heightmap");
+	TextureController::AssignTexture(tex1, 1, shader, "rocktexture");
+	TextureController::AssignTexture(tex2, 2, shader, "grasstexture");
+	TextureController::AssignTexture(tex3, 3, shader, "sandtexture");
+}
+
+double Terrain::CycleOctaves(glm::vec3 pos, int numoctaves) {
 
 }

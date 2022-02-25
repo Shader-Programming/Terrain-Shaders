@@ -26,7 +26,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
-unsigned int loadTexture(char const * path);
 void SetUniforms(Shader& shader);
 //unsigned int loadTexture2(char const * path);
 void setVAO(vector <float> vertices);
@@ -74,20 +73,12 @@ int main()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	// simple vertex and fragment shader - add your own tess and geo shader
-	Shader shader("..\\shaders\\plainVert.vs", "..\\shaders\\plainFrag.fs", "..\\shaders\\Norms.gs", "..\\shaders\\tessControlShader.tcs", "..\\shaders\\tessEvaluationShader.tes");
-	shader.use();
-
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
 	Terrain terrain(50, 50,10);
+	terrain.AssignTerrainTextures("..\\Resources\\heightMap.jpg", "..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
 	terrainVAO = terrain.getVAO();
 
-	
-	heightmap = loadTexture("..\\Resources\\heightMap.jpg");
-	shader.setInt("heightmap", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, heightmap);
-	SetUniforms(shader);
+	SetUniforms(terrain.shader);
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -102,10 +93,10 @@ int main()
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 model = glm::mat4(1.0f);
 		
-	    shader.setMat4("projection", projection);
-		shader.setMat4("view", view);
-		shader.setMat4("model", model);
-		shader.setVec3("viewPos", camera.Position);
+		terrain.shader.setMat4("projection", projection);
+		terrain.shader.setMat4("view", view);
+		terrain.shader.setMat4("model", model);
+		terrain.shader.setVec3("viewPos", camera.Position);
 	
 		glBindVertexArray(terrainVAO);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -175,47 +166,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	camera.ProcessMouseScroll(yoffset);
 }
 
-unsigned int loadTexture(char const * path)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		stbi_image_free(data);
-		std::cout << "Loaded texture at path: " << path << " width " << width << " id " << textureID <<  std::endl;
-
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
-		stbi_image_free(data);
-		
-	}
-
-	return textureID;
-}
-
 void SetUniforms(Shader& shader) {
 	shader.use();
+
+	const float red = 0.5;
+	const float green = 0.81;
+	const float blue = 0.92;
+
+	glClearColor(red, green, blue, 1.0);
 	//light properties
 	shader.setVec3("dirlight.direction", glm::vec3(.7f, -.6f, .2f));
 	shader.setVec3("dirlight.ambient", 0.5f, 0.5f, 0.5f);
@@ -226,6 +184,9 @@ void SetUniforms(Shader& shader) {
 	shader.setVec3("mat.diffuse", 0.396, 0.741, 0.691);
 	shader.setVec3("mat.specular", 0.297f, 0.308f, 0.306f);
 	shader.setFloat("mat.shininess", 0.9f);
+
+	shader.setFloat("scale", 50);
+	shader.setVec3("sky", glm::vec3(red, green, blue));
 }
 
 
