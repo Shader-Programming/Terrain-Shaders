@@ -15,10 +15,9 @@ class Terrain
 public:
 	Terrain(int widthIn, int heightIn, int stepSizeIn);
 	Terrain();
-	void AssignTerrainTextures(char const* path0, char const* path1, char const* path2, char const* path3);
+	void AssignTerrainTextures(char const* path1, char const* path2, char const* path3);
 	unsigned int getVAO();
 	int getSize();
-	double CycleOctaves(glm::vec3 pos, int numoctaves);
 	Shader shader = Shader("..\\shaders\\plainVert.vs", "..\\shaders\\plainFrag.fs", "..\\shaders\\Norms.gs", "..\\shaders\\tessControlShader.tcs", "..\\shaders\\tessEvaluationShader.tes");
 	
 private:
@@ -30,7 +29,6 @@ private:
 	void makeVertices(std::vector<float> *vertices);
 	void makeVertex(int x, int y, std::vector<float> *vertices);
 	std::vector<float> getVertices();
-	PerlinNoise perlin;
 };
 #endif
 

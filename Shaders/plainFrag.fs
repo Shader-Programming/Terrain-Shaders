@@ -38,9 +38,9 @@ void main()
     float height = posGS.y/scale;
     vec3 heightcol = vec3(0,0,0);
 
-    vec3 topcol = vec3(0,0.6,0.46);
-    vec3 medcol = vec3(0.26,0.27,0.29);
-    vec3 lowcol = vec3(0.77,0.64,0.52);
+    vec3 topcol = vec3(1,1,1);
+    vec3 medcol = vec3(0.77,0.64,0.52);
+    vec3 lowcol = vec3(0,0.6,0.46);
     //percentage multiplier for each of the 3 axis
     vec3 blendpercent = normalize(abs(normGS));
     float b = (blendpercent.x+blendpercent.y+blendpercent.z);
@@ -53,17 +53,17 @@ void main()
 
     vec4 tptex = xaxis*blendpercent.x+yaxis*blendpercent.y+zaxis*blendpercent.z;
 
-    if(height > 0.3){
+    if(height > 0.9){
         //textured
         //heightcol = vec3(mix(vec3(texture(rocktexture,posGS.xz)), vec3(texture(grasstexture,posGS.xz)),smoothstep(0.2,1.0,height)).rgb);
         //flat colour
-        heightcol = vec3(mix(vec3(medcol), vec3(topcol),smoothstep(0.3,1.0,height)).rgb);
+        heightcol = vec3(mix(vec3(medcol), vec3(topcol),smoothstep(1.0,1.5,height)).rgb);
         
     }else{
         //textured
         //heightcol = vec3(mix(vec3(texture(sandtexture,posGS.xz)), vec3(texture(rocktexture,posGS.xz)),smoothstep(0.0,0.2,height)).rgb);
         //flat colour
-        heightcol = vec3(mix(vec3(lowcol), vec3(medcol),smoothstep(0.0,0.3,height)).rgb);
+        heightcol = vec3(mix(vec3(lowcol), vec3(medcol),smoothstep(0.0,1.0,height)).rgb);
         
 
         

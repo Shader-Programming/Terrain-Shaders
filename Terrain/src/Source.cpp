@@ -75,7 +75,7 @@ int main()
 
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
 	Terrain terrain(50, 50,10);
-	terrain.AssignTerrainTextures("..\\Resources\\heightMap.jpg", "..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
+	terrain.AssignTerrainTextures("..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
 	terrainVAO = terrain.getVAO();
 
 	SetUniforms(terrain.shader);
@@ -169,9 +169,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 0.5;
-	const float green = 0.81;
-	const float blue = 0.92;
+	const float red = 0.98;
+	const float green = 0.95;
+	const float blue = 0.51;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
@@ -185,9 +185,9 @@ void SetUniforms(Shader& shader) {
 	shader.setVec3("mat.specular", 0.297f, 0.308f, 0.306f);
 	shader.setFloat("mat.shininess", 0.9f);
 
-	shader.setFloat("scale", 50);
+	shader.setFloat("scale", 35);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
-	shader.setInt("octaves", 10);
+	shader.setInt("octaves", 100);
 }
 
 

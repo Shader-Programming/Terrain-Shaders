@@ -17,8 +17,6 @@ uniform float scale;
 uniform vec3 viewPos ;
 uniform int octaves;
 
-uniform sampler2D heightmap;
-
 // read in vector arrays from previous shader
 in vec3 posTC[] ;
 in vec2 TexCoordsTC[];
@@ -42,26 +40,12 @@ void main()
 
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
-   float height = texture(heightmap,TexCoordsES).r;
-   //posES.y = height*scale;
-
    posES.y = noise(posES,octaves);
-   gl_Position = projection * view * vec4(posES, 1.0); 
-
-   float right = (textureOffset(heightmap,TexCoordsES,ivec2(1,0)).r)*scale;
-   float left = (textureOffset(heightmap,TexCoordsES,ivec2(-1,0)).r)*scale;
-
-   float up = (textureOffset(heightmap,TexCoordsES,ivec2(0,1)).r)*scale;
-   float down = (textureOffset(heightmap,TexCoordsES,ivec2(0,-1)).r)*scale;
-
-   normES = normalize(vec3((left-right),2.0,(up-down)));
-   
-
+   gl_Position = projection * view * vec4(posES, 1.0);  
 
    //fog stuff
-
    float G = 1.2;
-   float density = 0.003;
+   float density = 0.004;
 
    float dist = distance(viewPos,posES);
    visibilityES = exp(-pow((dist*density),G));
@@ -100,7 +84,7 @@ float snoise(vec3 x){
 
 float noise(vec3 position, int octaves){
     float total = 0.0f;
-    float frequency = 0.005;
+    float frequency = 0.03;
     float maxamplitude = 0.0f;
     float amplitude = 50;
 
@@ -110,6 +94,6 @@ float noise(vec3 position, int octaves){
         amplitude /= 2;
         maxamplitude += amplitude;
     }
-    return ((total/maxamplitude)*scale)-25;
+    return (total/maxamplitude)*scale;
 }
 

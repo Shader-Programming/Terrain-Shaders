@@ -106,33 +106,13 @@ void Terrain::makeVertex(int x, int y, std::vector<float> *vertices) {
 
 }
 
-void Terrain::AssignTerrainTextures(char const* path0, char const* path1, char const* path2, char const* path3) {
-	unsigned int tex0, tex1, tex2, tex3;
-	tex0 = TextureController::LoadTexture(path0);
+void Terrain::AssignTerrainTextures(char const* path1, char const* path2, char const* path3) {
+	unsigned int tex1, tex2, tex3;
 	tex1 = TextureController::LoadTexture(path1);
 	tex2 = TextureController::LoadTexture(path2);
 	tex3 = TextureController::LoadTexture(path3);
 
-	TextureController::AssignTexture(tex0, 0, shader, "heightmap");
-	TextureController::AssignTexture(tex1, 1, shader, "rocktexture");
-	TextureController::AssignTexture(tex2, 2, shader, "grasstexture");
-	TextureController::AssignTexture(tex3, 3, shader, "sandtexture");
-}
-
-double Terrain::CycleOctaves(glm::vec3 pos, int numoctaves) {
-	float total = 0.0f;
-	float maxamplitude = 0.0f;
-
-	float amplitude = 100.0f;
-	float frequency = 0.05f;
-
-	for (int i = 0; i < numoctaves; i++) {
-		double x = pos.x * frequency;
-		double y = pos.y * frequency;
-		total += perlin.noise(x, y, 0.1) * amplitude;
-		maxamplitude += amplitude;
-		frequency *= 2;
-		amplitude /= 2;
-	}
-	return (total / maxamplitude);
+	TextureController::AssignTexture(tex1, 0, shader, "rocktexture");
+	TextureController::AssignTexture(tex2, 1, shader, "grasstexture");
+	TextureController::AssignTexture(tex3, 2, shader, "sandtexture");
 }
