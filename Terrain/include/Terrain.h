@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include "Shader.h"
+#include "PerlinNoise.h"
 
 class Terrain
 {
@@ -29,7 +30,7 @@ private:
 	void makeVertices(std::vector<float> *vertices);
 	void makeVertex(int x, int y, std::vector<float> *vertices);
 	std::vector<float> getVertices();
-
+	PerlinNoise perlin;
 };
 #endif
 

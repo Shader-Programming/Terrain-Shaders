@@ -94,7 +94,6 @@ void Terrain::makeVertices(std::vector<float> *vertices) {
 }
 
 void Terrain::makeVertex(int x, int y, std::vector<float> *vertices) {
-
 	//x y z position
 	vertices->push_back((float)x); //xPos
 	vertices->push_back(0.0f); //yPos - always 0 for now. Going to calculate this on GPU - can change to calclaute it here.
@@ -121,5 +120,19 @@ void Terrain::AssignTerrainTextures(char const* path0, char const* path1, char c
 }
 
 double Terrain::CycleOctaves(glm::vec3 pos, int numoctaves) {
+	float total = 0.0f;
+	float maxamplitude = 0.0f;
 
+	float amplitude = 100.0f;
+	float frequency = 0.05f;
+
+	for (int i = 0; i < numoctaves; i++) {
+		double x = pos.x * frequency;
+		double y = pos.y * frequency;
+		total += perlin.noise(x, y, 0.1) * amplitude;
+		maxamplitude += amplitude;
+		frequency *= 2;
+		amplitude /= 2;
+	}
+	return (total / maxamplitude);
 }

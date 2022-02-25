@@ -187,6 +187,7 @@ void SetUniforms(Shader& shader) {
 
 	shader.setFloat("scale", 50);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
+	shader.setInt("octaves", 10);
 }
 
 
