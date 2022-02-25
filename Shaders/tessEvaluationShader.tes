@@ -82,6 +82,7 @@ float snoise(vec3 x){
     mix(hash(n+270),hash(n+271),f.x),f.y),f.z);
 }
 
+//noise
 float noise(vec3 position, int octaves){
     float total = 0.0f;
     float frequency = 0.03;
