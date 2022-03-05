@@ -139,8 +139,10 @@
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
+    <ClCompile Include="src\TextureController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Shaders\ComputeTest.cms" />
     <None Include="..\Shaders\Norms.gs" />
     <None Include="..\Shaders\plainFrag.fs" />
     <None Include="..\Shaders\plainVert.vs" />

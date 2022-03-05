@@ -12,6 +12,7 @@
 
 #include <Model.h>
 #include "Terrain.h"
+#include "TextureController.h"
 
 #include<string>
 #include <iostream>
@@ -77,6 +78,13 @@ int main()
 	Terrain terrain(50, 50,10);
 	terrain.AssignTerrainTextures("..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
 	terrainVAO = terrain.getVAO();
+
+	unsigned int plaintexture = TextureController::CreateTexture(512, 512);
+	Shader compute("..\\Shaders\\ComputeTest.cms");
+	compute.use();
+	glBindImageTexture(0, plaintexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(32, 16, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	SetUniforms(terrain.shader);
 	while (!glfwWindowShouldClose(window))

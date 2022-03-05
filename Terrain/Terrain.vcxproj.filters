@@ -68,6 +68,9 @@
     <ClCompile Include="src\PerlinNoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TextureController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp-vc140-mt.dll" />
@@ -76,5 +79,6 @@
     <None Include="..\Shaders\tessEvaluationShader.tes" />
     <None Include="..\Shaders\Norms.gs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
+    <None Include="..\Shaders\ComputeTest.cms" />
   </ItemGroup>
 </Project>

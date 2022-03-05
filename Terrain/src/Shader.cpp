@@ -144,6 +144,47 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 
 }
 
+Shader::Shader(const char* computepath) {
+	std::string computeCode;
+	std::ifstream cmsShaderFile;
+
+	// ensure ifstream objects can throw exceptions:
+	cmsShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	try
+	{
+		// open files
+		cmsShaderFile.open(computepath);
+		std::stringstream cmsShaderStream;
+		// read file's buffer contents into streams
+		cmsShaderStream << cmsShaderFile.rdbuf();
+
+		// close file handlers
+		cmsShaderFile.close();
+		// convert stream into string
+		computeCode = cmsShaderStream.str();
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cout << "ERROR::SHADER::COMPUTE_FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	}
+	const char* cmsShaderCode = computeCode.c_str();
+	// 2. compile shaders
+	unsigned int compute;
+	// vertex shader
+	compute = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(compute, 1, &cmsShaderCode, NULL);
+	glCompileShader(compute);
+	checkCompileErrors(compute, "COMPUTE");
+	std::cout << " loaded COMPUTE" << std::endl;
+	// shader Program
+	ID = glCreateProgram();
+	glAttachShader(ID, compute);
+	glLinkProgram(ID);
+	checkCompileErrors(ID, "PROGRAM");
+	glDeleteShader(compute);
+}
+
 void Shader::use()
 {
 	glUseProgram(ID);
