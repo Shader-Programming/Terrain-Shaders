@@ -25,14 +25,12 @@ unsigned int TextureController::LoadTexture(char const* path) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		stbi_image_free(data);
-		std::cout << "Loaded texture at path: " << path << " width " << width << " id " << textureID << std::endl;
-
+		std::cout << "Loaded texture at path " << path <<  " with ID: " << textureID << std::endl;
 	}
 	else
 	{
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
-
 	}
 
 	return textureID;
@@ -46,11 +44,12 @@ void TextureController::AssignTexture(unsigned int texture, int textureid, Shade
 }
 
 unsigned int TextureController::CreateTexture(int width, int height) {
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	return texture;
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	std::cout << "Created texture with ID: " << textureID << std::endl;
+	return textureID;
 }

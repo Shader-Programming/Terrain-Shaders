@@ -42,6 +42,9 @@
     <ClInclude Include="include\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Quad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -74,6 +77,9 @@
     <ClCompile Include="src\TextureController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Quad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp-vc140-mt.dll" />
@@ -83,5 +89,7 @@
     <None Include="..\Shaders\Norms.gs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
     <None Include="..\Shaders\ComputeTest.cms" />
+    <None Include="..\Shaders\Quad.vs" />
+    <None Include="..\Shaders\Quad.fs" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@
 #include <Model.h>
 #include "Terrain.h"
 #include "TextureController.h"
+#include "Quad.h"
 
 #include<string>
 #include <iostream>
@@ -49,8 +50,8 @@ float lastFrame = 0.0f;
 int main()
 {
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3.5);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3.5);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4.3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4.3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "IMAT3907", NULL, NULL);
 	if (window == NULL)
@@ -78,13 +79,16 @@ int main()
 	Terrain terrain(50, 50,10);
 	terrain.AssignTerrainTextures("..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
 	terrainVAO = terrain.getVAO();
+	Quad quad;
+	quad.CreateQuad();
 
-	//unsigned int plaintexture = TextureController::CreateTexture(512, 512);
-	//Shader compute("..\\Shaders\\ComputeTest.cms");
-	//compute.use();
-	//glBindImageTexture(0, plaintexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	//glDispatchCompute(32, 16, 1);
-	//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	unsigned int plaintexture = TextureController::LoadTexture("..\\Resources\\grass.jpg");
+	Shader compute("..\\Shaders\\ComputeTest.cms");
+	compute.use();
+	glBindImageTexture(0, plaintexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(32, 16, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	SetUniforms(terrain.shader);
 	while (!glfwWindowShouldClose(window))
@@ -106,9 +110,12 @@ int main()
 		terrain.shader.setMat4("model", model);
 		terrain.shader.setVec3("viewPos", camera.Position);
 	
+
 		glBindVertexArray(terrainVAO);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
+
+		quad.RenderQuad(plaintexture);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

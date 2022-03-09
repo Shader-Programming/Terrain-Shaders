@@ -125,6 +125,7 @@
     <ClInclude Include="include\Model.h" />
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\PerlinNoise.h" />
+    <ClInclude Include="include\Quad.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Terrain.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
+    <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
@@ -147,6 +149,8 @@
     <None Include="..\Shaders\Norms.gs" />
     <None Include="..\Shaders\plainFrag.fs" />
     <None Include="..\Shaders\plainVert.vs" />
+    <None Include="..\Shaders\Quad.fs" />
+    <None Include="..\Shaders\Quad.vs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
     <None Include="..\Shaders\tessEvaluationShader.tes" />
     <None Include="assimp-vc140-mt.dll" />
