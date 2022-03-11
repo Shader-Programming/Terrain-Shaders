@@ -182,9 +182,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 0.98;
-	const float green = 0.95;
-	const float blue = 0.51;
+	const float red = 0.57;
+	const float green = 0.64;
+	const float blue = 0.67;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
