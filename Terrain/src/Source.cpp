@@ -75,20 +75,21 @@ int main()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	//Noise Generation
+	unsigned int noisetexture = TextureController::CreateTexture(512, 512);
+	Shader compute("..\\Shaders\\ComputeNoise.cms");
+	compute.use();
+	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(32, 16, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
 	Terrain terrain(50, 50,10);
 	terrain.AssignTerrainTextures("..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
+	TextureController::AssignTexture(noisetexture, 3, terrain.shader, "noise");
 	terrainVAO = terrain.getVAO();
 	Quad quad;
 	quad.CreateQuad();
-
-
-	unsigned int plaintexture = TextureController::LoadTexture("..\\Resources\\grass.jpg");
-	Shader compute("..\\Shaders\\ComputeTest.cms");
-	compute.use();
-	glBindImageTexture(0, plaintexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(32, 16, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	SetUniforms(terrain.shader);
 	while (!glfwWindowShouldClose(window))
@@ -110,12 +111,9 @@ int main()
 		terrain.shader.setMat4("model", model);
 		terrain.shader.setVec3("viewPos", camera.Position);
 	
-
 		glBindVertexArray(terrainVAO);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
-
-		quad.RenderQuad(plaintexture);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

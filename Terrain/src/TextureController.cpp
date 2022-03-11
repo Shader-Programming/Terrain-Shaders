@@ -8,16 +8,25 @@ unsigned int TextureController::LoadTexture(char const* path) {
 	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 	if (data)
 	{
+		GLenum intformat;
 		GLenum format;
-		if (nrComponents == 1)
+		if (nrComponents == 1) {
+			intformat = GL_R32F;
 			format = GL_RED;
-		else if (nrComponents == 3)
+		}
+		else if (nrComponents == 3) {
+			intformat = GL_RGB32F;
 			format = GL_RGB;
-		else if (nrComponents == 4)
+		}
+		else if (nrComponents == 4) {
+			intformat = GL_RGBA32F;
 			format = GL_RGBA;
+		}
+
+		//std::cout << "Image loaded with " << nrComponents << " components" << std::endl;
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, intformat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -44,12 +53,13 @@ void TextureController::AssignTexture(unsigned int texture, int textureid, Shade
 }
 
 unsigned int TextureController::CreateTexture(int width, int height) {
+	//CHANGED TO FLOATS
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	std::cout << "Created texture with ID: " << textureID << std::endl;
 	return textureID;
 }

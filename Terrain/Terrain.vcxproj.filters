@@ -88,8 +88,8 @@
     <None Include="..\Shaders\tessEvaluationShader.tes" />
     <None Include="..\Shaders\Norms.gs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
-    <None Include="..\Shaders\ComputeTest.cms" />
     <None Include="..\Shaders\Quad.vs" />
     <None Include="..\Shaders\Quad.fs" />
+    <None Include="..\Shaders\ComputeNoise.cms" />
   </ItemGroup>
 </Project>
