@@ -35,9 +35,19 @@ void main()
    TexCoordsES = interpolate2D(TexCoordsTC[0], TexCoordsTC[1], TexCoordsTC[2]) ;
 
 
-   //Noise Height Mapping
+   //Noise Height Mapping and Normals
    float height = texture(noise,TexCoordsES).r;
    posES.y = height*scale;
+
+   float right = (textureOffset(noise,TexCoordsES,ivec2(1,0)).r)*scale;
+   float left = (textureOffset(noise,TexCoordsES,ivec2(-1,0)).r)*scale;
+   float up = (textureOffset(noise,TexCoordsES,ivec2(0,1)).r)*scale;
+   float down = (textureOffset(noise,TexCoordsES,ivec2(0,-1)).r)*scale;
+
+   float lr = left-right;
+   float ud = up-down;
+   normES = normalize(vec3(lr,2.0,ud));
+
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
    gl_Position = projection * view * vec4(posES, 1.0);  

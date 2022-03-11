@@ -1,12 +1,10 @@
 #version 330 core
 out vec4 FragColor ;
 
-
-//in vec2 TexCoords ;
-//in vec3 gWorldPos_FS_in ;
 in vec3 posGS;
 in vec3 normGS;
 in float visibilityGS;
+in vec2 TexCoordsGS;
 
 struct Material {
     vec3 ambient;
@@ -32,41 +30,20 @@ uniform sampler2D rocktexture;
 uniform sampler2D grasstexture;
 uniform sampler2D sandtexture;
 vec3 GetDirLight(vec3 norm, vec3 viewdir, vec3 heightcol);
-
+vec3 TriPlaner(sampler2D newtex);
 void main()
 {
     float height = posGS.y/scale;
     vec3 heightcol = vec3(0,0,0);
 
-    vec3 topcol = vec3(1,1,1);
-    vec3 medcol = vec3(0.77,0.64,0.52);
-    vec3 lowcol = vec3(0,0.6,0.46);
-    //percentage multiplier for each of the 3 axis
-    vec3 blendpercent = normalize(abs(normGS));
-    float b = (blendpercent.x+blendpercent.y+blendpercent.z);
-    blendpercent = blendpercent/vec3(b);
+    vec3 topcol = TriPlaner(grasstexture);
+    vec3 medcol = TriPlaner(rocktexture);
+    vec3 lowcol = TriPlaner(sandtexture);
 
-    //blend the 3 values with the textures from each axis perspective
-    vec4 xaxis = texture(rocktexture,posGS.yz);
-    vec4 yaxis = texture(rocktexture,posGS.xz);
-    vec4 zaxis = texture(rocktexture,posGS.xy);
-
-    vec4 tptex = xaxis*blendpercent.x+yaxis*blendpercent.y+zaxis*blendpercent.z;
-
-    if(height > 0.9){
-        //textured
-        //heightcol = vec3(mix(vec3(texture(rocktexture,posGS.xz)), vec3(texture(grasstexture,posGS.xz)),smoothstep(0.2,1.0,height)).rgb);
-        //flat colour
-        heightcol = vec3(mix(vec3(medcol), vec3(topcol),smoothstep(1.0,1.5,height)).rgb);
-        
+    if(height > 1.0){
+        heightcol = vec3(mix(medcol, topcol,smoothstep(1.0,1.8,height)).rgb);  
     }else{
-        //textured
-        //heightcol = vec3(mix(vec3(texture(sandtexture,posGS.xz)), vec3(texture(rocktexture,posGS.xz)),smoothstep(0.0,0.2,height)).rgb);
-        //flat colour
-        heightcol = vec3(mix(vec3(lowcol), vec3(medcol),smoothstep(0.0,1.0,height)).rgb);
-        
-
-        
+        heightcol = vec3(mix(lowcol, medcol,smoothstep(0.4,1.0,height)).rgb);       
     }
 
     //dunno how to use triplaner texturing
@@ -94,4 +71,17 @@ vec3 GetDirLight(vec3 norm, vec3 viewdir, vec3 heightcol){
     vec3 specular = dirlight.specular*(diffusefactor*mat.specular);
 
     return ambient+diffuse+specular;
+}
+
+vec3 TriPlaner(sampler2D newtex){
+    vec3 blendpercent = normalize(abs(normGS));
+    float b = (blendpercent.x+blendpercent.y+blendpercent.z);
+    blendpercent = blendpercent/vec3(b);
+
+    vec4 xaxis = texture(newtex,posGS.yz);
+    vec4 yaxis = texture(newtex,posGS.xz);
+    vec4 zaxis = texture(newtex,posGS.xy);
+
+    vec4 tptex = xaxis*blendpercent.x + yaxis*blendpercent.y + zaxis*blendpercent.z;
+    return vec3(tptex);
 }

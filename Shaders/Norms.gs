@@ -17,12 +17,13 @@ vec3 GetSurfaceNormal();
 
 void main()
 {
-   normGS = GetSurfaceNormal();
+   //normGS = GetSurfaceNormal();
    for(int i = 0 ; i < 3; i++)
    {
       gl_Position = gl_in[i].gl_Position ;
       posGS = posES[i] ;  
       TexCoordsGS = TexCoordsES[i];
+      normGS = normES[i];
       visibilityGS = visibilityES[i];
       EmitVertex() ;
   }
