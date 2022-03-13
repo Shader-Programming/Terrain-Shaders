@@ -33,7 +33,7 @@ void SetUniforms(Shader& shader);
 void setVAO(vector <float> vertices);
 
 // camera
-Camera camera(glm::vec3(260,50,300));
+Camera camera(glm::vec3(260,100,300));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -77,8 +77,8 @@ int main()
 
 	//Noise Generation
 	unsigned int noisetexture = TextureController::CreateTexture(512, 512);
-	Shader computenosie("..\\Shaders\\ComputeNoise.cms");
-	computenosie.use();
+	Shader computenoise("..\\Shaders\\ComputeNoise.cms");
+	computenoise.use();
 	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute(32, 16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -193,14 +193,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 0.25;
-	const float green = 0.76;
-	const float blue = 0.96;
+	const float red = 0.93;
+	const float green = 0.91;
+	const float blue = 0.67;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
 	shader.setVec3("dirlight.direction", glm::vec3(.12f, -.12f, .2f));
-	shader.setVec3("dirlight.ambient", 0.5f, 0.5f, 0.5f);
+	shader.setVec3("dirlight.ambient", 0.6f, 0.6f, 0.6f);
 	shader.setVec3("dirlight.diffuse", 0.55f, 0.55f, 0.55f);
 	shader.setVec3("dirlight.specular", 0.6f, 0.6f, 0.6f);
 	//material properties
@@ -209,9 +209,9 @@ void SetUniforms(Shader& shader) {
 	shader.setVec3("mat.specular", 0.297f, 0.308f, 0.306f);
 	shader.setFloat("mat.shininess", 0.9f);
 
-	shader.setFloat("scale", 35);
+	shader.setFloat("scale", 50);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
-	shader.setInt("octaves", 75);
+	shader.setInt("octaves", 3);
 }
 
 
