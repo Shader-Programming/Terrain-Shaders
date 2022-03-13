@@ -77,9 +77,18 @@ int main()
 
 	//Noise Generation
 	unsigned int noisetexture = TextureController::CreateTexture(512, 512);
-	Shader compute("..\\Shaders\\ComputeNoise.cms");
-	compute.use();
+	Shader computenosie("..\\Shaders\\ComputeNoise.cms");
+	computenosie.use();
 	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glDispatchCompute(32, 16, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+	unsigned int normalmap = TextureController::CreateTexture(512, 512);
+
+	Shader computecdm("..\\Shaders\\ComputeCDM.cms");
+	computecdm.use();
+	glBindImageTexture(0, normalmap, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindImageTexture(1, noisetexture, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
 	glDispatchCompute(32, 16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -114,6 +123,8 @@ int main()
 		glBindVertexArray(terrainVAO);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
+
+		quad.RenderQuad(normalmap);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -182,13 +193,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 0.57;
-	const float green = 0.64;
-	const float blue = 0.67;
+	const float red = 0.25;
+	const float green = 0.76;
+	const float blue = 0.96;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
-	shader.setVec3("dirlight.direction", glm::vec3(.7f, -.6f, .2f));
+	shader.setVec3("dirlight.direction", glm::vec3(.12f, -.12f, .2f));
 	shader.setVec3("dirlight.ambient", 0.5f, 0.5f, 0.5f);
 	shader.setVec3("dirlight.diffuse", 0.55f, 0.55f, 0.55f);
 	shader.setVec3("dirlight.specular", 0.6f, 0.6f, 0.6f);
@@ -200,7 +211,7 @@ void SetUniforms(Shader& shader) {
 
 	shader.setFloat("scale", 35);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
-	shader.setInt("octaves", 100);
+	shader.setInt("octaves", 75);
 }
 
 

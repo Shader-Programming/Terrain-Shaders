@@ -1,0 +1,32 @@
+#version 430
+
+layout(local_size_x = 16,local_size_y = 32) in;
+layout(binding = 0, rgba32f) uniform image2D normalmap;
+layout(binding = 1, rgba32f) uniform image2D noisemap;
+
+uniform float scale;
+
+float getheightvalue(ivec2 position);
+float hash(float n);
+float snoise(vec3 x);
+float noise(vec3 position, int octaves);
+
+void main(){
+	ivec2 pixelcoords = ivec2(gl_GlobalInvocationID.xy);
+
+	float right = getheightvalue(pixelcoords+ivec2(1,0));
+	float left = getheightvalue(pixelcoords+ivec2(-1,0));
+	float up = getheightvalue(pixelcoords+ivec2(0,1));
+	float down = getheightvalue(pixelcoords+ivec2(0,-1));
+
+	float lr = left-right;
+	float du = up-down;
+	vec3 normals = normalize(vec3(lr,2.0,du));
+	vec4 pixel = vec4(normals,1.0);
+	imageStore(normalmap,pixelcoords,pixel);
+}
+
+float getheightvalue(ivec2 position){
+    float height = imageLoad(noisemap,position).r;
+	return(height*35); //scaler
+}

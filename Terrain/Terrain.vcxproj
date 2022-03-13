@@ -145,6 +145,7 @@
     <ClCompile Include="src\TextureController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Shaders\ComputeCDM.cms" />
     <None Include="..\Shaders\ComputeNoise.cms" />
     <None Include="..\Shaders\Norms.gs" />
     <None Include="..\Shaders\plainFrag.fs" />

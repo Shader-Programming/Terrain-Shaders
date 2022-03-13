@@ -91,5 +91,6 @@
     <None Include="..\Shaders\Quad.vs" />
     <None Include="..\Shaders\Quad.fs" />
     <None Include="..\Shaders\ComputeNoise.cms" />
+    <None Include="..\Shaders\ComputeCDM.cms" />
   </ItemGroup>
 </Project>

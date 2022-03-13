@@ -25,6 +25,7 @@ uniform Material mat ;
 uniform vec3 viewPos ;
 uniform float scale;
 uniform vec3 sky;
+uniform sampler2D normalmap;
 
 uniform sampler2D rocktexture;
 uniform sampler2D grasstexture;
@@ -33,6 +34,11 @@ vec3 GetDirLight(vec3 norm, vec3 viewdir, vec3 heightcol);
 vec3 TriPlaner(sampler2D newtex);
 void main()
 {
+    //Normal Map Import
+    //vec3 norm = normalize(texture(normalmap,TexCoordsGS).xyz);
+    vec3 norm = normalize(normGS);
+
+    //Height Dependant Texturing
     float height = posGS.y/scale;
     vec3 heightcol = vec3(0,0,0);
 
@@ -46,15 +52,14 @@ void main()
         heightcol = vec3(mix(lowcol, medcol,smoothstep(0.4,1.0,height)).rgb);       
     }
 
-    //dunno how to use triplaner texturing
-
+    //Result
     vec3 result = vec3(0,0,0);
-
     vec3 viewdir = normalize(viewPos - posGS);
-    vec3 norm = normalize(normGS);
 
+    //Directional Light
     result = GetDirLight(norm,viewdir,heightcol);
 
+    //Fog Import
     FragColor = vec4(result,1.0f) ;
     FragColor = mix(vec4(sky,1.0),FragColor,visibilityGS);
 }
