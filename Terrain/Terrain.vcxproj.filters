@@ -45,6 +45,9 @@
     <ClInclude Include="include\Quad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -80,6 +83,9 @@
     <ClCompile Include="src\Quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp-vc140-mt.dll" />
@@ -92,5 +98,7 @@
     <None Include="..\Shaders\Quad.fs" />
     <None Include="..\Shaders\ComputeNoise.cms" />
     <None Include="..\Shaders\ComputeCDM.cms" />
+    <None Include="..\Shaders\WaterPlane.fs" />
+    <None Include="..\Shaders\WaterPlane.vs" />
   </ItemGroup>
 </Project>

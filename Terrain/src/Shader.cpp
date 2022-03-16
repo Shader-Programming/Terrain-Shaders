@@ -79,13 +79,11 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 	glShaderSource(vertex, 1, &vShaderCode, NULL);
 	glCompileShader(vertex);
 	checkCompileErrors(vertex, "VERTEX");
-	std::cout << " loaded VERT" << std::endl;
 	// fragment Shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fShaderCode, NULL);
 	glCompileShader(fragment);
 	checkCompileErrors(fragment, "FRAGMENT");
-	std::cout << " loaded FRAG" << std::endl;
 
 	// if geometry shader is given, compile geometry shader
 	unsigned int geometry;
@@ -96,7 +94,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 		glShaderSource(geometry, 1, &gShaderCode, NULL);
 		glCompileShader(geometry);
 		checkCompileErrors(geometry, "GEOMETRY");
-		std::cout << " loaded GEO" << std::endl;
 	}
 	unsigned int tessControl;
 	if (tessCPath != nullptr)
@@ -106,7 +103,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 		glShaderSource(tessControl, 1, &tcShaderCode, NULL);
 		glCompileShader(tessControl);
 		checkCompileErrors(tessControl, "TESS Control");
-		std::cout << " loaded TC" << std::endl;
 	}
 	unsigned int tessEval;
 	if (tessEPath != nullptr)
@@ -116,7 +112,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 		glShaderSource(tessEval, 1, &teShaderCode, NULL);
 		glCompileShader(tessEval);
 		checkCompileErrors(tessEval, "TESS Eval");
-		std::cout << " loaded TE" << std::endl;
 	}
 
 	// shader Program
@@ -140,8 +135,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 		glDeleteShader(tessControl);
 	if (tessEPath != nullptr)
 		glDeleteShader(tessEval);
-
-
 }
 
 Shader::Shader(const char* computepath) {

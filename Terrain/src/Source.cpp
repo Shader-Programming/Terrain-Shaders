@@ -14,6 +14,7 @@
 #include "Terrain.h"
 #include "TextureController.h"
 #include "Quad.h"
+#include "Water.h"
 
 #include<string>
 #include <iostream>
@@ -29,8 +30,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void SetUniforms(Shader& shader);
-//unsigned int loadTexture2(char const * path);
-void setVAO(vector <float> vertices);
 
 // camera
 Camera camera(glm::vec3(260,100,300));
@@ -97,13 +96,26 @@ int main()
 	terrain.AssignTerrainTextures("..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
 	TextureController::AssignTexture(noisetexture, 3, terrain.shader, "noise");
 	terrainVAO = terrain.getVAO();
+
+	//Clipping
+	//glEnable(GL_CLIP_DISTANCE0);
+	//glm::vec4 plane = glm::vec4(0, -1, 0, -1);
+	//terrain.shader.setVec4("clipplane", plane);
+
+	//Quad for 2D
 	Quad quad;
 	quad.CreateQuad();
+
+	//Water Plane
+	Water water(45);
+	water.CreatePlane();
+
+
 
 	SetUniforms(terrain.shader);
 	while (!glfwWindowShouldClose(window))
 	{
-
+		terrain.shader.use();
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
@@ -123,6 +135,11 @@ int main()
 		glBindVertexArray(terrainVAO);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
+
+		water.shader.use();
+		water.shader.setMat4("projection", projection);
+		water.shader.setMat4("view", view);
+		water.RenderPlane();
 
 		//quad.RenderQuad(normalmap);
 

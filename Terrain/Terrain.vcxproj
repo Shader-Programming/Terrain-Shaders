@@ -130,6 +130,7 @@
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Terrain.h" />
     <ClInclude Include="include\TextureController.h" />
+    <ClInclude Include="include\Water.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
     <ClCompile Include="src\TextureController.cpp" />
+    <ClCompile Include="src\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\ComputeCDM.cms" />
@@ -154,6 +156,8 @@
     <None Include="..\Shaders\Quad.vs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
     <None Include="..\Shaders\tessEvaluationShader.tes" />
+    <None Include="..\Shaders\WaterPlane.fs" />
+    <None Include="..\Shaders\WaterPlane.vs" />
     <None Include="assimp-vc140-mt.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
