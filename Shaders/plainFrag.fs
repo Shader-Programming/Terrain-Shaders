@@ -39,17 +39,21 @@ void main()
     vec3 norm = normalize(normGS);
 
     //Height Dependant Texturing
-    float height = posGS.y/scale;
+    float height = posGS.y*scale;
+    float flatness = norm.y*scale;
     vec3 heightcol = vec3(0,0,0);
 
-    vec3 topcol = TriPlaner(grasstexture);
-    vec3 medcol = TriPlaner(rocktexture);
+    vec3 topcol = TriPlaner(rocktexture);
     vec3 lowcol = TriPlaner(sandtexture);
 
-    if(height > 1.0){
-        heightcol = vec3(mix(medcol, topcol,smoothstep(1.0,1.8,height)).rgb);  
-    }else{
-        heightcol = vec3(mix(lowcol, medcol,smoothstep(0.4,1.0,height)).rgb);       
+    //if(height > 1.0){
+    //    heightcol = vec3(mix(medcol, topcol,smoothstep(1.0,1.8,height)).rgb);  
+    //}else{
+    //    heightcol = vec3(mix(lowcol, medcol,smoothstep(0.4,1.0,height)).rgb);       
+    //}
+    heightcol = vec3(mix(lowcol, topcol,smoothstep(0.5,1.0,height)).rgb); 
+    if(flatness > 43){
+        heightcol = vec3(mix(topcol, lowcol,smoothstep(43,49.8,flatness)).rgb); 
     }
 
     //Result

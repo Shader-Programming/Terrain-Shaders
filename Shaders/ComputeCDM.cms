@@ -2,30 +2,33 @@
 
 layout(local_size_x = 16,local_size_y = 32) in;
 layout(binding = 0, rgba32f) uniform image2D normalmap;
-layout(binding = 1, rgba32f) uniform image2D noisemap;
 
-float getheightvalue(ivec2 position);
-float hash(float n);
-float snoise(vec3 x);
-float noise(vec3 position, int octaves);
+uniform sampler2D noisemap;
+
+vec3 CDM(vec2 pixelcoords);
 
 void main(){
 	ivec2 pixelcoords = ivec2(gl_GlobalInvocationID.xy);
+    vec2 uvcoords = vec2(pixelcoords.x/512,pixelcoords.y/512);
 
-	float right = getheightvalue(pixelcoords+ivec2(1,0));
-	float left = getheightvalue(pixelcoords+ivec2(-1,0));
-	float up = getheightvalue(pixelcoords+ivec2(0,1));
-	float down = getheightvalue(pixelcoords+ivec2(0,-1));
-
-	vec3 lr = vec3(2.0,left-right,0.0);
-	vec3 ud = vec3(0.0,up-down,2.0);
-	vec3 normals = normalize(cross(lr,ud));
+	vec3 normals = CDM(uvcoords);
 
 	vec4 pixel = vec4(normals,1.0);
 	imageStore(normalmap,pixelcoords,pixel);
 }
 
-float getheightvalue(ivec2 position){
-    vec4 height = imageLoad(noisemap,position);
-	return height.r*50; //scaler
+vec3 CDM(vec2 pixelcoords){
+    float adjustment = 1.0;
+    float right = (textureOffset(noisemap,pixelcoords,ivec2(adjustment,0)).r);
+    float left = (textureOffset(noisemap,pixelcoords,ivec2(-adjustment,0)).r);
+    float up = (textureOffset(noisemap,pixelcoords,ivec2(0,adjustment)).r);
+    float down = (textureOffset(noisemap,pixelcoords,ivec2(0,-adjustment)).r);
+
+    //vec3 hor = vec3(2.0,right-left,0.0);
+    //vec3 vert = vec3(0.0,down-up,2.0);
+    //return normalize(cross(hor,vert));
+
+    float lr = left-right;
+    float ud = up-down;
+    return normalize(vec3(lr,2.0,ud));
 }

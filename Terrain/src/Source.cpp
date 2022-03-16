@@ -20,8 +20,8 @@
 #include <numeric>
 
 
-const unsigned int SCR_WIDTH = 1200;
-const unsigned int SCR_HEIGHT = 900;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -87,8 +87,8 @@ int main()
 
 	Shader computecdm("..\\Shaders\\ComputeCDM.cms");
 	computecdm.use();
+	TextureController::AssignTexture(noisetexture, 0, computecdm, "noisemap");
 	glBindImageTexture(0, normalmap, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glBindImageTexture(1, noisetexture, 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
 	glDispatchCompute(32, 16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -124,7 +124,7 @@ int main()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
 
-		quad.RenderQuad(normalmap);
+		//quad.RenderQuad(normalmap);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
