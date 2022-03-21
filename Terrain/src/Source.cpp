@@ -110,7 +110,7 @@ int main()
 	quad.CreateQuad();
 
 	//Water Plane
-	Water water(45);
+	Water water(75);
 	water.CreatePlane();
 
 

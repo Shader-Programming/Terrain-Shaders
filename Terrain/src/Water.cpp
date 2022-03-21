@@ -6,7 +6,7 @@ Water::Water(int newheight) {
 }
 
 void Water::CreatePlane() {
-	float planesize = 100;
+	float planesize = 1000;
 	float vertices[] = {
 		-planesize, height, -planesize,	0.0,1.0, 0.0,	0.0,0.0,
 		planesize, height, -planesize,	0.0,1.0, 0.0,	1.0,0.0,

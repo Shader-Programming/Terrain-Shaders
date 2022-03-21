@@ -63,3 +63,10 @@ unsigned int TextureController::CreateTexture(int width, int height) {
 	std::cout << "Created texture with ID: " << textureID << std::endl;
 	return textureID;
 }
+
+unsigned int TextureController::CreateFBOCA(unsigned int FBO, int SCR_WIDTH, int SCR_HEIGHT) {
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	unsigned int attatchment = CreateTexture(SCR_WIDTH, SCR_HEIGHT);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, attatchment, 0);
+}
