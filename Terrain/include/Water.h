@@ -13,6 +13,6 @@ public:
 	void RenderPlane();
 	Shader shader = Shader("..\\shaders\\WaterPlane.vs", "..\\shaders\\WaterPlane.fs");
 private:
-	int height;
+	float height;
 	unsigned int planeVBO, planeVAO, planeEBO;
 };

@@ -136,12 +136,12 @@ int main()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
 
+		//quad.RenderQuad(normalmap);
+
 		water.shader.use();
 		water.shader.setMat4("projection", projection);
 		water.shader.setMat4("view", view);
 		water.RenderPlane();
-
-		//quad.RenderQuad(normalmap);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

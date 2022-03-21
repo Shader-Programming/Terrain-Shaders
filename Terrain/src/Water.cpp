@@ -16,7 +16,6 @@ void Water::CreatePlane() {
 
 	glGenVertexArrays(1, &planeVAO);
 	glGenBuffers(1, &planeVBO);
-
 	glBindVertexArray(planeVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
@@ -31,6 +30,9 @@ void Water::CreatePlane() {
 	// uv attribute
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void Water::RenderPlane() {
