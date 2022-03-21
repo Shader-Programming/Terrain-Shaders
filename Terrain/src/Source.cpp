@@ -24,12 +24,16 @@
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
 
+//FrameBuffers
+unsigned int MountainFBO, WaterFBO;
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
-void SetUniforms(Shader& shader);
+void SetTerrainUniforms(Shader& shader);
+void SetContinuousUniforms(Shader& terrain, Shader& water);
 
 // camera
 Camera camera(glm::vec3(260,100,300));
@@ -115,7 +119,12 @@ int main()
 
 
 
-	SetUniforms(terrain.shader);
+	SetTerrainUniforms(terrain.shader);
+
+	//FBO Attatchments
+	//unsigned int mountainCA = TextureController::CreateFBOCA(MountainFBO, SCR_WIDTH, SCR_HEIGHT, 0);
+	//unsigned int waterCA = TextureController::CreateFBOCA(WaterFBO, SCR_WIDTH, SCR_HEIGHT, 1);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		terrain.shader.use();
@@ -125,26 +134,11 @@ int main()
 		processInput(window);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1200.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		glm::mat4 model = glm::mat4(1.0f);
-		
-		terrain.shader.setMat4("projection", projection);
-		terrain.shader.setMat4("view", view);
-		terrain.shader.setMat4("model", model);
-		terrain.shader.setVec3("viewPos", camera.Position);
 	
-		glBindVertexArray(terrainVAO);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
+		SetContinuousUniforms(terrain.shader, water.shader);
+		terrain.RenderTerrain();
 
-		//quad.RenderQuad(noisetexture);
-
-		water.shader.use();
-		water.shader.setMat4("projection", projection);
-		water.shader.setMat4("view", view);
-		water.RenderPlane();
+		//water.RenderPlane();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -210,7 +204,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	camera.ProcessMouseScroll(yoffset);
 }
 
-void SetUniforms(Shader& shader) {
+void SetTerrainUniforms(Shader& shader) {
 	shader.use();
 
 	const float red = 0.53;
@@ -232,6 +226,20 @@ void SetUniforms(Shader& shader) {
 	shader.setFloat("scale", 100);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
 	shader.setInt("octaves", 3);
+}
+
+void SetContinuousUniforms(Shader& terrain, Shader& water) {
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1200.0f);
+	glm::mat4 view = camera.GetViewMatrix();
+
+	terrain.use();
+	terrain.setMat4("projection", projection);
+	terrain.setMat4("view", view);
+	terrain.setVec3("viewPos", camera.Position);
+
+	water.use();
+	water.setMat4("projection", projection);
+	water.setMat4("view", view);
 }
 
 

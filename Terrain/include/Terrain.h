@@ -17,6 +17,7 @@ public:
 	Terrain();
 	void AssignTerrainTextures(char const* path1, char const* path2, char const* path3);
 	unsigned int getVAO();
+	void RenderTerrain();
 	int getSize();
 	Shader shader = Shader("..\\shaders\\plainVert.vs", "..\\shaders\\plainFrag.fs", "..\\shaders\\Norms.gs", "..\\shaders\\tessControlShader.tcs", "..\\shaders\\tessEvaluationShader.tes");
 	

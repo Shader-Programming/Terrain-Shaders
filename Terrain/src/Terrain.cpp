@@ -116,3 +116,12 @@ void Terrain::AssignTerrainTextures(char const* path1, char const* path2, char c
 	TextureController::AssignTexture(tex2, 1, shader, "grasstexture");
 	TextureController::AssignTexture(tex3, 2, shader, "sandtexture");
 }
+
+void Terrain::RenderTerrain() {
+	shader.use();
+	glm::mat4 model = glm::mat4(1.0);
+	shader.setMat4("model", model);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glDrawArrays(GL_PATCHES, 0, getSize());
+}
