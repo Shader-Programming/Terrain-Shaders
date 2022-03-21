@@ -10,9 +10,9 @@ float noise(vec3 position, int octaves);
 
 void main(){
 	ivec2 pixelcoords = ivec2(gl_GlobalInvocationID.xy);
-    int octaves = 5;
+    int octaves = 10;
 
-    float pixelcol = noise(vec3(pixelcoords.x,pixelcoords.y,1),octaves);
+    float pixelcol = noise(vec3(pixelcoords.x,0,pixelcoords.y),octaves);
 	vec4 pixel = vec4(pixelcol,pixelcol,pixelcol,1.0);
 	imageStore(noisetexture,pixelcoords,pixel);
 }
@@ -38,14 +38,14 @@ float snoise(vec3 x){
 
 float noise(vec3 position, int octaves){
     float total = 0.0f;
-    float frequency = 0.005;
+    float frequency = 0.005; //0.005
     float maxamplitude = 0.0f;
-    float amplitude = 50;
+    float amplitude = 50; //50
 
     for(int i = 0; i < octaves; i++){
         total += snoise(position*frequency)*amplitude;
-        frequency *= 2.5; //2
-        amplitude /= 3; //2
+        frequency *= 2; //2
+        amplitude /= 2; //2
         maxamplitude += amplitude;
     }
     return (total/maxamplitude);

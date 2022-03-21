@@ -13,6 +13,8 @@ out vec3 normGS;
 out vec2 TexCoordsGS;
 out float visibilityGS;
 
+uniform vec4 clipplane;
+
 vec3 GetSurfaceNormal();
 
 void main()
@@ -25,6 +27,7 @@ void main()
       TexCoordsGS = TexCoordsES[i];
       normGS = normES[i];
       visibilityGS = visibilityES[i];
+      gl_ClipDistance[0] = dot(clipplane,vec4(posES[i],1.0));
       EmitVertex() ;
   }
      EndPrimitive() ;

@@ -74,21 +74,24 @@ int main()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	//Noise Generation
+	//Maps
 	unsigned int noisetexture = TextureController::CreateTexture(512, 512);
+	unsigned int normalmap = TextureController::CreateTexture(512, 512);
+
+	//Noise Generation
 	Shader computenoise("..\\Shaders\\ComputeNoise.cms");
 	computenoise.use();
 	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(32, 16, 1);
+	glDispatchCompute((GLuint)32, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
-	unsigned int normalmap = TextureController::CreateTexture(512, 512);
-
+	//Normal Generation
 	Shader computecdm("..\\Shaders\\ComputeCDM.cms");
 	computecdm.use();
+	computecdm.setInt("scale", 100);
 	TextureController::AssignTexture(noisetexture, 0, computecdm, "noisemap");
 	glBindImageTexture(0, normalmap, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute(32, 16, 1);
+	glDispatchCompute((GLuint)32, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
@@ -98,9 +101,9 @@ int main()
 	terrainVAO = terrain.getVAO();
 
 	//Clipping
-	//glEnable(GL_CLIP_DISTANCE0);
-	//glm::vec4 plane = glm::vec4(0, -1, 0, -1);
-	//terrain.shader.setVec4("clipplane", plane);
+	glEnable(GL_CLIP_DISTANCE0);
+	glm::vec4 plane = glm::vec4(0, 1, 0, -75);
+	terrain.shader.setVec4("clipplane", plane);
 
 	//Quad for 2D
 	Quad quad;
@@ -136,7 +139,7 @@ int main()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDrawArrays(GL_PATCHES, 0, terrain.getSize());
 
-		//quad.RenderQuad(normalmap);
+		//quad.RenderQuad(noisetexture);
 
 		water.shader.use();
 		water.shader.setMat4("projection", projection);
@@ -210,9 +213,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 0.93;
-	const float green = 0.91;
-	const float blue = 0.67;
+	const float red = 0.53;
+	const float green = 0.81;
+	const float blue = 0.92;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
@@ -226,7 +229,7 @@ void SetUniforms(Shader& shader) {
 	shader.setVec3("mat.specular", 0.297f, 0.308f, 0.306f);
 	shader.setFloat("mat.shininess", 0.9f);
 
-	shader.setFloat("scale", 50);
+	shader.setFloat("scale", 100);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
 	shader.setInt("octaves", 3);
 }

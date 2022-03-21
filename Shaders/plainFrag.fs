@@ -44,7 +44,7 @@ void main()
     vec3 heightcol = vec3(0,0,0);
 
     vec3 topcol = TriPlaner(rocktexture);
-    vec3 lowcol = TriPlaner(sandtexture);
+    vec3 lowcol = TriPlaner(grasstexture);
 
     //if(height > 1.0){
     //    heightcol = vec3(mix(medcol, topcol,smoothstep(1.0,1.8,height)).rgb);  
@@ -52,8 +52,8 @@ void main()
     //    heightcol = vec3(mix(lowcol, medcol,smoothstep(0.4,1.0,height)).rgb);       
     //}
     heightcol = vec3(mix(lowcol, topcol,smoothstep(0.5,1.0,height)).rgb); 
-    if(flatness > 43){
-        heightcol = vec3(mix(topcol, lowcol,smoothstep(43,49.8,flatness)).rgb); 
+    if(flatness > 75){
+        heightcol = vec3(mix(topcol, lowcol,smoothstep(75,80,flatness)).rgb); 
     }
 
     //Result
