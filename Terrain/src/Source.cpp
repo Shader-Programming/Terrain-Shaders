@@ -121,24 +121,40 @@ int main()
 
 	SetTerrainUniforms(terrain.shader);
 
-	//FBO Attatchments
-	//unsigned int mountainCA = TextureController::CreateFBOCA(MountainFBO, SCR_WIDTH, SCR_HEIGHT, 0);
-	//unsigned int waterCA = TextureController::CreateFBOCA(WaterFBO, SCR_WIDTH, SCR_HEIGHT, 1);
+	//FBO Attatchments (BLACK SCREEN IF EITHER OF THESE ARE IN USE)
+	//unsigned int mountainCA = TextureController::CreateFBOCA(MountainFBO, SCR_WIDTH, SCR_HEIGHT, 1);
+	//unsigned int waterCA = TextureController::CreateFBOCA(WaterFBO, SCR_WIDTH, SCR_HEIGHT, 2);
 
 	while (!glfwWindowShouldClose(window))
 	{
-		terrain.shader.use();
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		processInput(window);
 
+		//Bind FBO and draw scene
+		//glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
+		//glEnable(GL_DEPTH_TEST);
+
+		//Clear FBO
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
+		//Render Scene to fill FBO
 		SetContinuousUniforms(terrain.shader, water.shader);
 		terrain.RenderTerrain();
 
-		//water.RenderPlane();
+		//(WATER PLANE DOESN'T RENDER)
+		water.RenderPlane();
+
+		//Now use default FBO
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glDisable(GL_DEPTH_TEST);
+
+		//Clear all buffers
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//Render to screen
+		//quad.RenderQuad(mountainCA);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
