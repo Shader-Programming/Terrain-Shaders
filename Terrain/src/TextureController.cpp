@@ -1,4 +1,5 @@
 #include "TextureController.h"
+#include <stdlib.h>
 
 unsigned int TextureController::LoadTexture(char const* path) {
 	unsigned int textureID;
@@ -45,11 +46,12 @@ unsigned int TextureController::LoadTexture(char const* path) {
 	return textureID;
 }
 
-void TextureController::AssignTexture(unsigned int texture, int textureid, Shader shader, std::string name) {
+void TextureController::AssignTexture(unsigned int texture, Shader shader, std::string name) {
 	shader.use();
-	shader.setInt(name, textureid);
-	glActiveTexture(GL_TEXTURE0 + textureid);
+	glActiveTexture(GL_TEXTURE0 + texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
+	shader.setInt(name, texture);
+	std::cout << "Assigned texture with ID " << texture <<  " to shader" <<std::endl;
 }
 
 unsigned int TextureController::CreateTexture(int width, int height) {
@@ -60,14 +62,28 @@ unsigned int TextureController::CreateTexture(int width, int height) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	std::cout << "Created texture with ID: " << textureID << std::endl;
+	std::cout << "Created blank texture with ID: " << textureID << std::endl;
 	return textureID;
 }
 
-unsigned int TextureController::CreateFBOCA(unsigned int FBO, int SCR_WIDTH, int SCR_HEIGHT, int FBOid) {
-	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	unsigned int attatchment = CreateTexture(SCR_WIDTH, SCR_HEIGHT);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+FBOid, GL_TEXTURE_2D, attatchment, 0);
-	return attatchment;
+void TextureController::CreateFBOCA(unsigned int& colourattatchment, int SCR_WIDTH, int SCR_HEIGHT) {
+	glGenTextures(1, &colourattatchment);
+	glBindTexture(GL_TEXTURE_2D, colourattatchment);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colourattatchment, 0);
+	std::cout << "Created FBO colour attatchment with ID: " << colourattatchment << std::endl;
+}
+
+void TextureController::CreateFBODA(unsigned int depthattatchment, int SCR_WIDTH, int SCR_HEIGHT) {
+	glGenTextures(1, &depthattatchment);
+	glBindTexture(GL_TEXTURE_2D, depthattatchment);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthattatchment, 0);
+	std::cout << "Created FBO depth attatchment with ID: " << depthattatchment << std::endl;
 }

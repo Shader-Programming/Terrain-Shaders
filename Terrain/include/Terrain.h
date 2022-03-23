@@ -15,12 +15,12 @@ class Terrain
 public:
 	Terrain(int widthIn, int heightIn, int stepSizeIn);
 	Terrain();
-	void AssignTerrainTextures(char const* path1, char const* path2, char const* path3);
+	void AssignTerrainTextures(char const* path1, char const* path2);
 	unsigned int getVAO();
 	void RenderTerrain();
 	int getSize();
 	Shader shader = Shader("..\\shaders\\plainVert.vs", "..\\shaders\\plainFrag.fs", "..\\shaders\\Norms.gs", "..\\shaders\\tessControlShader.tcs", "..\\shaders\\tessEvaluationShader.tes");
-	
+	unsigned int heightmap;	
 private:
 	std::vector<float> vertices;
 	unsigned int VAO, VBO;

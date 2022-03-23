@@ -29,7 +29,6 @@ uniform sampler2D normalmap;
 
 uniform sampler2D rocktexture;
 uniform sampler2D grasstexture;
-uniform sampler2D sandtexture;
 vec3 GetDirLight(vec3 norm, vec3 viewdir, vec3 heightcol);
 vec3 TriPlaner(sampler2D newtex);
 void main()

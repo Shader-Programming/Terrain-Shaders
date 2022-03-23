@@ -106,19 +106,19 @@ void Terrain::makeVertex(int x, int y, std::vector<float> *vertices) {
 
 }
 
-void Terrain::AssignTerrainTextures(char const* path1, char const* path2, char const* path3) {
-	unsigned int tex1, tex2, tex3;
+void Terrain::AssignTerrainTextures(char const* path1, char const* path2) {
+	unsigned int tex1, tex2;
 	tex1 = TextureController::LoadTexture(path1);
 	tex2 = TextureController::LoadTexture(path2);
-	tex3 = TextureController::LoadTexture(path3);
 
-	TextureController::AssignTexture(tex1, 0, shader, "rocktexture");
-	TextureController::AssignTexture(tex2, 1, shader, "grasstexture");
-	TextureController::AssignTexture(tex3, 2, shader, "sandtexture");
+	TextureController::AssignTexture(tex1, shader, "rocktexture");
+	TextureController::AssignTexture(tex2, shader, "grasstexture");
 }
 
 void Terrain::RenderTerrain() {
 	shader.use();
+	glActiveTexture(GL_TEXTURE0 + heightmap);
+	glBindTexture(GL_TEXTURE_2D, heightmap);
 	glm::mat4 model = glm::mat4(1.0);
 	shader.setMat4("model", model);
 	glBindVertexArray(VAO);

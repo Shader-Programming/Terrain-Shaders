@@ -25,8 +25,8 @@ const unsigned int SCR_WIDTH = 1200;
 const unsigned int SCR_HEIGHT = 900;
 
 //FrameBuffers
-unsigned int MountainFBO;
-unsigned int mountainCA;
+unsigned int MountainFBO, WaterFBO;
+unsigned int mountainCA, mountainDA, waterCA, waterDA;
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -36,6 +36,7 @@ void processInput(GLFWwindow *window);
 void SetTerrainUniforms(Shader& shader);
 void SetContinuousUniforms(Shader& terrain, Shader& water);
 void SetFBOColour();
+void CreateFBO(unsigned int& FBO, unsigned int& colourattatchment, unsigned int& depthattatchment);
 
 // camera
 Camera camera(glm::vec3(260,100,300));
@@ -95,21 +96,17 @@ int main()
 	Shader computecdm("..\\Shaders\\ComputeCDM.cms");
 	computecdm.use();
 	computecdm.setInt("scale", 100);
-	TextureController::AssignTexture(noisetexture, 0, computecdm, "noisemap");
+	TextureController::AssignTexture(noisetexture, computecdm, "noisemap");
 	glBindImageTexture(0, normalmap, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute((GLuint)32, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
 	Terrain terrain(50, 50,10);
-	terrain.AssignTerrainTextures("..\\Resources\\stone.png", "..\\Resources\\grass.jpg", "..\\Resources\\sand.png");
-	TextureController::AssignTexture(noisetexture, 3, terrain.shader, "noise");
+	terrain.AssignTerrainTextures("..\\Resources\\rock\\diffuse.jpg", "..\\Resources\\grass\\diffuse.jpg");
+	TextureController::AssignTexture(noisetexture, terrain.shader, "noise");
 	terrainVAO = terrain.getVAO();
-
-	//Clipping
-	glEnable(GL_CLIP_DISTANCE0);
-	glm::vec4 plane = glm::vec4(0, 1, 0, -75);
-	terrain.shader.setVec4("clipplane", plane);
+	terrain.heightmap = noisetexture;
 
 	//Quad for 2D
 	Quad quad;
@@ -121,11 +118,13 @@ int main()
 
 	SetTerrainUniforms(terrain.shader);
 
-	//FBO Attatchments (BLACK SCREEN IF EITHER OF THESE ARE IN USE)
-	//unsigned int mountainCA = TextureController::CreateFBOCA(MountainFBO, SCR_WIDTH, SCR_HEIGHT, 1);
-	SetFBOColour();
-	//cout << mountainCA << endl;
-	//unsigned int waterCA = TextureController::CreateFBOCA(WaterFBO, SCR_WIDTH, SCR_HEIGHT, 2);
+	//Clip Plane
+	glEnable(GL_CLIP_DISTANCE0);
+
+	CreateFBO(MountainFBO,mountainCA,mountainDA);
+	CreateFBO(WaterFBO, waterCA, waterDA);
+	unsigned int watertexture = TextureController::LoadTexture("..\\Resources\\water.jpg");
+
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -134,21 +133,42 @@ int main()
 		lastFrame = currentFrame;
 		processInput(window);
 
-		//Bind FBO and draw scene
-		glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
+		SetContinuousUniforms(terrain.shader, water.shader);
+		//MOUNTAIN FBO
+		terrain.shader.use();
+		glm::vec4 plane = glm::vec4(0, 1, 0, -75);
+		terrain.shader.setVec4("clipplane", plane);
 
+		glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
 		//Clean back buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		//Enable Depth
 		glEnable(GL_DEPTH_TEST);
-
 		//Render Scene to fill FBO
 		glEnable(GL_CULL_FACE);
-		SetContinuousUniforms(terrain.shader, water.shader);
+		//Render
 		terrain.RenderTerrain();
 		glDisable(GL_CULL_FACE);
-		water.RenderPlane(normalmap);
+		water.RenderPlane(watertexture);
+
+		//WATER FBO
+		terrain.shader.use();
+		plane = glm::vec4(0, -1, 0, 75);
+		terrain.shader.setVec4("clipplane", plane);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, WaterFBO);
+		//Clean back buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Enable Depth
+		glEnable(GL_DEPTH_TEST);
+		//Render Scene to fill FBO
+		glEnable(GL_CULL_FACE);
+		//Render
+		terrain.RenderTerrain();
+		glDisable(GL_CULL_FACE);
+		water.RenderPlane(watertexture);
+
+
 
 		//Now use default FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -156,7 +176,7 @@ int main()
 		glDisable(GL_DEPTH_TEST);
 
 		//Render to screen
-		quad.RenderQuad(mountainCA);
+		quad.RenderQuad(waterCA);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -260,28 +280,14 @@ void SetContinuousUniforms(Shader& terrain, Shader& water) {
 	water.setMat4("view", view);
 }
 
-void SetFBOColour() {
-	glGenFramebuffers(1, &MountainFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
-
-	//colour
-	glGenTextures(1, &mountainCA);
-	glBindTexture(GL_TEXTURE_2D, mountainCA);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mountainCA,0);
-
-
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		std::cout << "ERROR::FRAMEBUFFER:: framebuffer is not compelte!" << std::endl;
-	}
+void CreateFBO(unsigned int& FBO, unsigned int& colourattatchment, unsigned int& depthattatchment) {
+	cout << endl;
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	cout << "Created FBO with ID: " << FBO << endl;
+	TextureController::CreateFBOCA(colourattatchment, SCR_WIDTH, SCR_HEIGHT);
+	TextureController::CreateFBODA(depthattatchment, SCR_WIDTH, SCR_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 

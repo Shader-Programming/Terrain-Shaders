@@ -48,9 +48,9 @@ void Water::CreatePlane() {
 
 void Water::RenderPlane(unsigned int& textureobj) {
 	shader.use();
-	shader.setInt("image", 5);
-	glActiveTexture(GL_TEXTURE5);
+	glActiveTexture(GL_TEXTURE0+textureobj);
 	glBindTexture(GL_TEXTURE_2D, textureobj);
+	shader.setInt("image", textureobj);
 	glm::mat4 model = glm::mat4(1.0);
 	shader.setMat4("model", model);
 	glBindVertexArray(planeVAO);

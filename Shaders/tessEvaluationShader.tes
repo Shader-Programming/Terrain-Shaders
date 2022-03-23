@@ -53,8 +53,8 @@ void main()
    gl_Position = projection * view * vec4(posES, 1.0); 
 
    //fog stuff
-   float G = 1.2;
-   float density = 0.004;
+   float G = 1.0;
+   float density = 0.002;
 
    float dist = distance(viewPos,posES);
    visibilityES = exp(-pow((dist*density),G));
