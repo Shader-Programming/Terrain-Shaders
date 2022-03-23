@@ -6,6 +6,9 @@ in vec3 normals;
 in vec3 posWS;
 in vec2 UV;
 
+uniform sampler2D image;
+
 void main(){
-	FragColor = vec4(1,1,1,1);
+    vec3 result = texture(image,UV).rgb;
+    FragColor = vec4(result,1.0);
 }

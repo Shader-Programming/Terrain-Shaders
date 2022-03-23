@@ -2,7 +2,8 @@
 
 void Quad::RenderQuad(unsigned int& textureobj) {
 	shader.use();
-	glActiveTexture(GL_TEXTURE0);
+	shader.setInt("image", textureobj);
+	glActiveTexture(GL_TEXTURE0+textureobj);
 	glBindTexture(GL_TEXTURE_2D, textureobj);
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

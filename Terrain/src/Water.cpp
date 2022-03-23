@@ -6,20 +6,31 @@ Water::Water(int newheight) {
 }
 
 void Water::CreatePlane() {
-	float planesize = 1000;
+	float planesize = 240;
+	float planeoffset = 250;
 	float vertices[] = {
-		-planesize, height, -planesize,	0.0,1.0, 0.0,	0.0,0.0,
-		planesize, height, -planesize,	0.0,1.0, 0.0,	1.0,0.0,
-		planesize, height, planesize,	0.0,1.0, 0.0,	1.0,1.0,
-		-planesize, height, planesize,	0.0,1.0, 0.0,	0.0,1.0
+		-planesize + planeoffset - 10, height, -planesize + planeoffset - 10,  0.0,1.0, 0.0,	0.0,0.0,
+		planesize + planeoffset, height, -planesize + planeoffset - 10,	0.0,1.0, 0.0,	1.0,0.0, 
+		planesize + planeoffset, height, planesize + planeoffset,	0.0,1.0, 0.0,	1.0,1.0, 
+		-planesize + planeoffset - 10, height, planesize + planeoffset,	0.0,1.0, 0.0,	0.0,1.0
+	};
+
+	unsigned int indices[] = {
+	3,2,1,
+	3,1,0
 	};
 
 	glGenVertexArrays(1, &planeVAO);
 	glGenBuffers(1, &planeVBO);
+	glGenBuffers(1, &planeEBO);
+
 	glBindVertexArray(planeVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -35,11 +46,14 @@ void Water::CreatePlane() {
 	glBindVertexArray(0);
 }
 
-void Water::RenderPlane() {
+void Water::RenderPlane(unsigned int& textureobj) {
 	shader.use();
+	shader.setInt("image", 5);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, textureobj);
 	glm::mat4 model = glm::mat4(1.0);
 	shader.setMat4("model", model);
 	glBindVertexArray(planeVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

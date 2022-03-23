@@ -21,11 +21,12 @@
 #include <numeric>
 
 
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_WIDTH = 1200;
+const unsigned int SCR_HEIGHT = 900;
 
 //FrameBuffers
-unsigned int MountainFBO, WaterFBO;
+unsigned int MountainFBO;
+unsigned int mountainCA;
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -34,6 +35,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void SetTerrainUniforms(Shader& shader);
 void SetContinuousUniforms(Shader& terrain, Shader& water);
+void SetFBOColour();
 
 // camera
 Camera camera(glm::vec3(260,100,300));
@@ -117,12 +119,12 @@ int main()
 	Water water(75);
 	water.CreatePlane();
 
-
-
 	SetTerrainUniforms(terrain.shader);
 
 	//FBO Attatchments (BLACK SCREEN IF EITHER OF THESE ARE IN USE)
 	//unsigned int mountainCA = TextureController::CreateFBOCA(MountainFBO, SCR_WIDTH, SCR_HEIGHT, 1);
+	SetFBOColour();
+	//cout << mountainCA << endl;
 	//unsigned int waterCA = TextureController::CreateFBOCA(WaterFBO, SCR_WIDTH, SCR_HEIGHT, 2);
 
 	while (!glfwWindowShouldClose(window))
@@ -133,28 +135,28 @@ int main()
 		processInput(window);
 
 		//Bind FBO and draw scene
-		//glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
-		//glEnable(GL_DEPTH_TEST);
+		glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
 
-		//Clear FBO
+		//Clean back buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		//Enable Depth
+		glEnable(GL_DEPTH_TEST);
+
 		//Render Scene to fill FBO
+		glEnable(GL_CULL_FACE);
 		SetContinuousUniforms(terrain.shader, water.shader);
 		terrain.RenderTerrain();
-
-		//(WATER PLANE DOESN'T RENDER)
-		water.RenderPlane();
+		glDisable(GL_CULL_FACE);
+		water.RenderPlane(normalmap);
 
 		//Now use default FBO
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glDisable(GL_DEPTH_TEST);
-
-		//Clear all buffers
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//Disable Depth
+		glDisable(GL_DEPTH_TEST);
 
 		//Render to screen
-		//quad.RenderQuad(mountainCA);
+		quad.RenderQuad(mountainCA);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -256,6 +258,30 @@ void SetContinuousUniforms(Shader& terrain, Shader& water) {
 	water.use();
 	water.setMat4("projection", projection);
 	water.setMat4("view", view);
+}
+
+void SetFBOColour() {
+	glGenFramebuffers(1, &MountainFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
+
+	//colour
+	glGenTextures(1, &mountainCA);
+	glBindTexture(GL_TEXTURE_2D, mountainCA);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mountainCA,0);
+
+
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		std::cout << "ERROR::FRAMEBUFFER:: framebuffer is not compelte!" << std::endl;
+	}
 }
 
 
