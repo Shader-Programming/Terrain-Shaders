@@ -115,6 +115,9 @@ int main()
 	//Water Plane
 	Water water(75);
 	water.CreatePlane();
+	TextureController::AssignTexture(TextureController::LoadTexture("..\\Resources\\water\\dudv.png"), water.shader, "DuDv");
+	TextureController::AssignTexture(TextureController::LoadTexture("..\\Resources\\water\\normal.png"), water.shader, "normalmap");
+	water.shader.setVec3("lightdir", glm::vec3(.12f, -.12f, .2f));
 
 	SetTerrainUniforms(terrain.shader);
 
@@ -192,6 +195,7 @@ int main()
 		water.shader.setVec3("camerapos", camera.Position);
 		water.shader.setFloat("screenW", SCR_WIDTH);
 		water.shader.setFloat("screenH", SCR_HEIGHT);
+		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA,waterCA);
 
 		glfwSwapBuffers(window);

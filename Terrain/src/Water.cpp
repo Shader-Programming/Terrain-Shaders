@@ -6,6 +6,7 @@ Water::Water(int newheight) {
 }
 
 void Water::CreatePlane() {
+	shader.use();
 	float planesize = 240;
 	float planeoffset = 250;
 	float vertices[] = {
