@@ -46,11 +46,14 @@ void Water::CreatePlane() {
 	glBindVertexArray(0);
 }
 
-void Water::RenderPlane(unsigned int& textureobj) {
+void Water::RenderPlane(unsigned int& reflection, unsigned int& refraction) {
 	shader.use();
-	glActiveTexture(GL_TEXTURE0+textureobj);
-	glBindTexture(GL_TEXTURE_2D, textureobj);
-	shader.setInt("image", textureobj);
+	shader.setInt("reflection", reflection);
+	shader.setInt("refraction", refraction);
+	glActiveTexture(GL_TEXTURE0 + reflection);
+	glBindTexture(GL_TEXTURE_2D, reflection);
+	glActiveTexture(GL_TEXTURE0 + refraction);
+	glBindTexture(GL_TEXTURE_2D, refraction);
 	glm::mat4 model = glm::mat4(1.0);
 	shader.setMat4("model", model);
 	glBindVertexArray(planeVAO);

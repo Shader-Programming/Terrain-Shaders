@@ -133,8 +133,13 @@ int main()
 		lastFrame = currentFrame;
 		processInput(window);
 
+		glm::vec3 storedpos = camera.Position;
+		float storedpitch = camera.Pitch;
+
+		//Set Global Frame Uniforms
 		SetContinuousUniforms(terrain.shader, water.shader);
-		//MOUNTAIN FBO
+
+		//REFLECTION
 		terrain.shader.use();
 		glm::vec4 plane = glm::vec4(0, 1, 0, -75);
 		terrain.shader.setVec4("clipplane", plane);
@@ -145,13 +150,15 @@ int main()
 		//Enable Depth
 		glEnable(GL_DEPTH_TEST);
 		//Render Scene to fill FBO
-		glEnable(GL_CULL_FACE);
-		//Render
+		camera.Position = glm::vec3(storedpos.x, 70, storedpos.z);
+		camera.Pitch = storedpitch * -1;
 		terrain.RenderTerrain();
-		glDisable(GL_CULL_FACE);
-		water.RenderPlane(watertexture);
 
-		//WATER FBO
+		//Reset Camera
+		camera.Position = glm::vec3(storedpos.x, storedpos.y, storedpos.z);
+		camera.Pitch = storedpitch;
+
+		//REFRACTION
 		terrain.shader.use();
 		plane = glm::vec4(0, -1, 0, 75);
 		terrain.shader.setVec4("clipplane", plane);
@@ -162,21 +169,35 @@ int main()
 		//Enable Depth
 		glEnable(GL_DEPTH_TEST);
 		//Render Scene to fill FBO
-		glEnable(GL_CULL_FACE);
-		//Render
 		terrain.RenderTerrain();
-		glDisable(GL_CULL_FACE);
-		water.RenderPlane(watertexture);
+
 
 
 
 		//Now use default FBO
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//Disable Depth
-		glDisable(GL_DEPTH_TEST);
+		//Clean back buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Enable Depth
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_CLIP_DISTANCE0);
+		//Render Scene to fill FBO
+		glEnable(GL_CULL_FACE);
+		//Render Everything
+		terrain.RenderTerrain();
+		glDisable(GL_CULL_FACE);
 
+		water.shader.use();
+		water.shader.setVec3("camerapos", camera.Position);
+		water.shader.setFloat("screenW", SCR_WIDTH);
+		water.shader.setFloat("screenH", SCR_HEIGHT);
+		water.RenderPlane(mountainCA,waterCA);
+
+
+		//Disable Depth
+		//glDisable(GL_DEPTH_TEST);
 		//Render to screen
-		quad.RenderQuad(waterCA);
+		//quad.RenderQuad(waterCA);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

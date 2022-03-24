@@ -10,7 +10,7 @@ class Water {
 public:
 	Water(int newheight);
 	void CreatePlane();
-	void RenderPlane(unsigned int& textureobj);
+	void RenderPlane(unsigned int& reflection, unsigned int& refraction);
 	Shader shader = Shader("..\\shaders\\WaterPlane.vs", "..\\shaders\\WaterPlane.fs");
 private:
 	float height;
