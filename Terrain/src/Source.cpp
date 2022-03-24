@@ -186,18 +186,13 @@ int main()
 		//Render Everything
 		terrain.RenderTerrain();
 		glDisable(GL_CULL_FACE);
-
+		
+		//Water Uniforms
 		water.shader.use();
 		water.shader.setVec3("camerapos", camera.Position);
 		water.shader.setFloat("screenW", SCR_WIDTH);
 		water.shader.setFloat("screenH", SCR_HEIGHT);
 		water.RenderPlane(mountainCA,waterCA);
-
-
-		//Disable Depth
-		//glDisable(GL_DEPTH_TEST);
-		//Render to screen
-		//quad.RenderQuad(waterCA);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
