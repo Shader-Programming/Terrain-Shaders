@@ -8,11 +8,16 @@
 
 class Water {
 public:
-	Water(int newheight);
+	Water();
+	Water(int newheight, int newdiameter, int newstepsize);
 	void CreatePlane();
 	void RenderPlane(unsigned int& reflection, unsigned int& refraction);
 	Shader shader = Shader("..\\shaders\\WaterPlane.vs", "..\\shaders\\WaterPlane.fs");
 private:
 	float height;
-	unsigned int planeVBO, planeVAO, planeEBO;
+	float diameter;
+	float stepsize;
+	std::vector<float> vertices;
+	void MakeVertex(int x, int y, std::vector<float>* vertices);
+	unsigned int planeVBO, planeVAO;
 };
