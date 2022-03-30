@@ -44,7 +44,7 @@ void main(){
 
 vec3 Highlights(vec3 norms,vec3 viewDir){
     vec3 halfwaydir = normalize(lightdir+viewDir);
-    float spec = pow(max(dot(norms,halfwaydir),0.0),2);
-    vec3 specular = vec3(0.1,0.1,0.1)*spec;
+    float spec = pow(max(dot(norms,halfwaydir),0.0),16);
+    vec3 specular = vec3(1.0,1.0,1.0)*spec;
     return specular;
 }

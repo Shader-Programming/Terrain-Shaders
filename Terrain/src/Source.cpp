@@ -82,14 +82,14 @@ int main()
 	glCullFace(GL_BACK);
 
 	//Maps
-	unsigned int noisetexture = TextureController::CreateTexture(512, 512);
-	unsigned int normalmap = TextureController::CreateTexture(512, 512);
+	unsigned int noisetexture = TextureController::CreateTexture(1024, 1024);
+	unsigned int normalmap = TextureController::CreateTexture(1024, 1024);
 
 	//Noise Generation
 	Shader computenoise("..\\Shaders\\ComputeNoise.cms");
 	computenoise.use();
 	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute((GLuint)32, (GLuint)16, 1);
+	glDispatchCompute((GLuint)64, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	//Normal Generation
@@ -98,7 +98,7 @@ int main()
 	computecdm.setInt("scale", 100);
 	TextureController::AssignTexture(noisetexture, computecdm, "noisemap");
 	glBindImageTexture(0, normalmap, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-	glDispatchCompute((GLuint)32, (GLuint)16, 1);
+	glDispatchCompute((GLuint)64, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
@@ -117,7 +117,7 @@ int main()
 	water.CreatePlane();
 	TextureController::AssignTexture(TextureController::LoadTexture("..\\Resources\\water\\dudv.png"), water.shader, "DuDv");
 	TextureController::AssignTexture(TextureController::LoadTexture("..\\Resources\\water\\normal.png"), water.shader, "normalmap");
-	water.shader.setVec3("lightdir", glm::vec3(.12f, -.12f, .2f));
+	water.shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
 
 	SetTerrainUniforms(terrain.shader);
 
@@ -269,7 +269,7 @@ void SetTerrainUniforms(Shader& shader) {
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
-	shader.setVec3("dirlight.direction", glm::vec3(.12f, -.12f, .2f));
+	shader.setVec3("dirlight.direction", glm::vec3(-1.0, -1.0, -1.0));
 	shader.setVec3("dirlight.ambient", 0.6f, 0.6f, 0.6f);
 	shader.setVec3("dirlight.diffuse", 0.55f, 0.55f, 0.55f);
 	shader.setVec3("dirlight.specular", 0.6f, 0.6f, 0.6f);
