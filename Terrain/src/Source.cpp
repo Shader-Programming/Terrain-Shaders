@@ -126,8 +126,6 @@ int main()
 
 	CreateFBO(MountainFBO,mountainCA,mountainDA);
 	CreateFBO(WaterFBO, waterCA, waterDA);
-	unsigned int watertexture = TextureController::LoadTexture("..\\Resources\\water.jpg");
-
 
 	while (!glfwWindowShouldClose(window))
 	{
