@@ -115,8 +115,14 @@ int main()
 	//Water Plane
 	Water water(75,50,10);
 	water.CreatePlane();
-	TextureController::AssignTexture(TextureController::LoadTexture("..\\Resources\\water\\normal.png"), water.shader, "normalmap");
-	TextureController::AssignTexture(TextureController::LoadTexture("..\\Resources\\water\\dudv.png"), water.shader, "DuDv");
+	
+	water.shader.use();
+	unsigned int waterNormals = TextureController::LoadTexture("..\\Resources\\water\\normal.png");
+	unsigned int waterDuDv = TextureController::LoadTexture("..\\Resources\\water\\dudv.png");
+
+	TextureController::AssignTexture(waterNormals, water.shader, "normalmap");
+	TextureController::AssignTexture(waterDuDv, water.shader, "DuDv");
+	
 	water.shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
 
 	SetTerrainUniforms(terrain.shader);

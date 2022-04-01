@@ -24,7 +24,7 @@ unsigned int TextureController::LoadTexture(char const* path) {
 			format = GL_RGBA;
 		}
 
-		//std::cout << "Image loaded with " << nrComponents << " components" << std::endl;
+		std::cout << "Image loaded with " << nrComponents << " components" << std::endl;
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, intformat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
