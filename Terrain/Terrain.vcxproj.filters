@@ -100,5 +100,8 @@
     <None Include="..\Shaders\ComputeCDM.cms" />
     <None Include="..\Shaders\WaterPlane.fs" />
     <None Include="..\Shaders\WaterPlane.vs" />
+    <None Include="..\Shaders\WaterGeo.gs" />
+    <None Include="..\Shaders\WaterTessC.tcs" />
+    <None Include="..\Shaders\WaterTessE.tes" />
   </ItemGroup>
 </Project>

@@ -34,8 +34,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void SetTerrainUniforms(Shader& shader);
+void SetWaterUniforms(Shader& shader);
 void SetContinuousUniforms(Shader& terrain, Shader& water);
-void SetFBOColour();
 void CreateFBO(unsigned int& FBO, unsigned int& colourattatchment, unsigned int& depthattatchment);
 
 // camera
@@ -122,9 +122,7 @@ int main()
 
 	TextureController::AssignTexture(waterNormals, water.shader, "normalmap");
 	TextureController::AssignTexture(waterDuDv, water.shader, "DuDv");
-	
-	water.shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
-
+	SetWaterUniforms(water.shader);
 	SetTerrainUniforms(terrain.shader);
 
 	//Clip Plane
@@ -288,6 +286,16 @@ void SetTerrainUniforms(Shader& shader) {
 	shader.setFloat("scale", 100);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
 	shader.setInt("octaves", 3);
+}
+
+void SetWaterUniforms(Shader& shader) {
+	shader.use();
+	const float red = 0.53;
+	const float green = 0.81;
+	const float blue = 0.92;
+	glClearColor(red, green, blue, 1.0);
+	shader.setVec3("sky", glm::vec3(red, green, blue));
+	shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
 }
 
 void SetContinuousUniforms(Shader& terrain, Shader& water) {

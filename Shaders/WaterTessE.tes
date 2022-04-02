@@ -1,0 +1,76 @@
+#version 450 core
+
+// reading in a triangle, split tesselated triangels evenly in a counter-clockwise direction (ccw)
+layout(triangles, equal_spacing, ccw) in;
+
+// forward declare functions to perfrom interpolation with the barycentric coordinates from the Primitive Generator
+vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2) ;
+vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2) ;
+
+// unifrom matrices to perform transformations
+// previously this would have been done in vertex shader
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform vec3 camerapos;
+
+
+// read in vector arrays from previous shader
+in vec3 posTC[] ;
+in vec2 TexCoordsTC[];
+in vec3 normTC[];
+
+// pass along the interpolated values
+out vec3 posES ;
+out vec2 TexCoordsES;
+out vec3 normES;
+out float visibilityES;
+
+vec3 CalculateGerstnerWaves(vec3 V, float amp, vec2 wavedir, float crestdist, float speed);
+
+void main()
+{
+    // interpolate the normal and xyz position using the linear interpolation function
+    // use 3D because they are in three dimensions; 2D also included for uv texture coordinates
+   posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
+   TexCoordsES = interpolate2D(TexCoordsTC[0], TexCoordsTC[1], TexCoordsTC[2]) ;
+   normES = normTC;
+
+
+   // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
+
+   vec3 posMod = CalculateGerstnerWaves(aPos, 1.5, vec2(1.0,0.0),50,0.5);
+   gl_Position = projection * view * vec4(posMod, 1.0); 
+
+   //fog stuff
+   float G = 1.0;
+   float density = 0.002;
+
+   float dist = distance(camerapos,posES);
+   visibilityES = exp(-pow((dist*density),G));
+   visibilityES = clamp(visibilityES,0.0,1.0);
+} 
+
+
+//basic linear interpolation
+vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
+{
+   	return vec2(gl_TessCoord.x) * v0 + vec2(gl_TessCoord.y) * v1 + vec2(gl_TessCoord.z) * v2;
+}
+
+vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
+{
+   	return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
+}
+vec3 CalculateGerstnerWaves(vec3 V, float amp, vec2 wavedir, float crestdist, float speed){
+    speed*=time;
+    float wavelength = (2*3.14152)/crestdist;
+    float phasespd = sqrt(9.8)/wavelength; //phase speed
+
+    float f = V.y+(dot(V.xy,wavedir)-phasespd*speed)*wavelength;
+    V.x += wavedir.x*(amp*cos(f));
+    V.y += amp*sin(f);
+    V.z += wavedir.y*(amp*cos(f));
+
+    return V;
+}

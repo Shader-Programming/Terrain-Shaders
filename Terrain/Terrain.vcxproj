@@ -156,8 +156,11 @@
     <None Include="..\Shaders\Quad.vs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
     <None Include="..\Shaders\tessEvaluationShader.tes" />
+    <None Include="..\Shaders\WaterGeo.gs" />
     <None Include="..\Shaders\WaterPlane.fs" />
     <None Include="..\Shaders\WaterPlane.vs" />
+    <None Include="..\Shaders\WaterTessC.tcs" />
+    <None Include="..\Shaders\WaterTessE.tes" />
     <None Include="assimp-vc140-mt.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
