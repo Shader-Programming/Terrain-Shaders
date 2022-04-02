@@ -207,8 +207,6 @@ int main()
 		water.shader.setFloat("screenH", SCR_HEIGHT);
 		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA,waterCA);
-
-		quad.RenderQuad(normalmap);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
