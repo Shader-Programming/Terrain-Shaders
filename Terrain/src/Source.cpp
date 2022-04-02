@@ -19,6 +19,7 @@
 #include<string>
 #include <iostream>
 #include <numeric>
+#include <random>
 
 
 const unsigned int SCR_WIDTH = 1200;
@@ -88,6 +89,10 @@ int main()
 	//Noise Generation
 	Shader computenoise("..\\Shaders\\ComputeNoise.cms");
 	computenoise.use();
+	srand(clock());
+	float seed = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 20)); //random float between 0 and 20
+	cout << "SEED: " << seed << endl;
+	computenoise.setFloat("seed", seed);
 	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute((GLuint)64, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -200,6 +205,7 @@ int main()
 		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA,waterCA);
 
+		quad.RenderQuad(normalmap);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -296,6 +302,16 @@ void SetWaterUniforms(Shader& shader) {
 	glClearColor(red, green, blue, 1.0);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
 	shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
+
+	shader.setFloat("waves[0].amp", 1);
+	shader.setVec2("waves[0].wavedir", glm::vec2(1.0, 1.0));
+	shader.setFloat("waves[0].crestdist", 50);
+	shader.setFloat("waves[0].speed", 0.5);
+
+	shader.setFloat("waves[1].amp", 1.5);
+	shader.setVec2("waves[1].wavedir", glm::vec2(1.0, 1.0));
+	shader.setFloat("waves[1].crestdist", 50);
+	shader.setFloat("waves[1].speed", 1.5);
 }
 
 void SetContinuousUniforms(Shader& terrain, Shader& water) {

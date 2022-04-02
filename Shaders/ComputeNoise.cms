@@ -7,6 +7,8 @@ float hash(float n);
 float snoise(vec3 x);
 float noise(vec3 position, int octaves);
 
+uniform float seed;
+
 
 void main(){
 	ivec2 pixelcoords = ivec2(gl_GlobalInvocationID.xy);
@@ -19,7 +21,7 @@ void main(){
 
 
 float hash(float n){
-    return fract(sin(n)*753.543123);
+    return fract(sin(n)*753.543123*seed);
 }
 
 float snoise(vec3 x){

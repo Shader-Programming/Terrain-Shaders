@@ -10,7 +10,7 @@ vec3 CDM(vec2 pixelcoords);
 
 void main(){
 	ivec2 pixelcoords = ivec2(gl_GlobalInvocationID.xy);
-    vec2 uvcoords = vec2(pixelcoords.x/512.0f,pixelcoords.y/512.0f);
+    vec2 uvcoords = vec2(pixelcoords.x/1024.0f,pixelcoords.y/1024.0f);
     vec4 perlin = texture(noisemap,uvcoords);
 
 	vec3 normals = CDM(uvcoords);
@@ -20,12 +20,24 @@ void main(){
 }
 
 vec3 CDM(vec2 pixelcoords){
+    //Normal CDM
     float right = (textureOffset(noisemap,pixelcoords,ivec2(1.0,0)).r)*scale;
     float left = (textureOffset(noisemap,pixelcoords,ivec2(-1.0,0)).r)*scale;
     float up = (textureOffset(noisemap,pixelcoords,ivec2(0,1.0)).r)*scale;
     float down = (textureOffset(noisemap,pixelcoords,ivec2(0,-1.0)).r)*scale;
 
+    //Diagonal CDM
+    float topright = (textureOffset(noisemap, pixelcoords, ivec2(1.0, 1.0)).r) * scale;
+    float topleft = (textureOffset(noisemap, pixelcoords, ivec2(-1.0, 1.0)).r) * scale;
+    float bottomright = (textureOffset(noisemap, pixelcoords, ivec2(1.0, -1.0)).r) * scale;
+    float bottomleft = (textureOffset(noisemap, pixelcoords, ivec2(-1.0, -1.0)).r) * scale;
+
     float lr = left-right;
     float ud = up-down;
-    return normalize(vec3(lr,2.0,ud));
+    float diag1 = topleft - bottomright;
+    float diag2 = topright - bottomleft;
+
+    vec3 normals = normalize(vec3(lr,2.0,ud));
+    vec3 diagnormals = normalize(vec3(diag1,2.0,diag2));
+    return normalize(normals+diagnormals);
 }
