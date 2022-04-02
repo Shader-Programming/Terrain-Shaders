@@ -12,7 +12,7 @@ public:
 	Water(int newheight, int newdiameter, int newstepsize);
 	void CreatePlane();
 	void RenderPlane(unsigned int& reflection, unsigned int& refraction);
-	Shader shader = Shader("..\\shaders\\WaterPlane.vs", "..\\shaders\\WaterPlane.fs");
+	Shader shader = Shader("..\\shaders\\WaterPlane.vs", "..\\shaders\\WaterPlane.fs", "..\\shaders\\WaterGeo.gs", "..\\shaders\\WaterTessC.tcs", "..\\shaders\\WaterTessE.tes");
 private:
 	float height;
 	float diameter;

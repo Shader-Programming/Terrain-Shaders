@@ -64,7 +64,7 @@ void Water::RenderPlane(unsigned int& reflection, unsigned int& refraction) {
 	shader.setMat4("model", model);
 	glBindVertexArray(planeVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	glDrawArrays(GL_PATCHES, 0, vertices.size());
 }
 
 void Water::MakeVertex(int x, int y, std::vector<float>* vertices) {

@@ -45,7 +45,7 @@ void main()
    // pass through position and tex information
    posTC[gl_InvocationID]  = posVS[gl_InvocationID] ;
    TexCoordsTC[gl_InvocationID]  = TexCoordsVS[gl_InvocationID] ;
-   normTC[gl_InvocationID] = normVS[gl_InvocationID[] ;
+   normTC[gl_InvocationID] = normVS[gl_InvocationID] ;
 
 }
 
@@ -53,13 +53,13 @@ float GetTessLevel(float distance0, float distance1){
     float avg = (distance0+distance1)/2;
 
     if(avg < 75){
-        return 4;    
+        return 8;    
     }else if(avg < 80){
-        return 3; 
+        return 6; 
     }else if(avg < 100){
-        return 2; 
+        return 4; 
     }else if(avg < 150){
-        return 1; 
+        return 2; 
     }else{
         return 1; 
     }
