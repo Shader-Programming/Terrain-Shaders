@@ -90,9 +90,12 @@ int main()
 	Shader computenoise("..\\Shaders\\ComputeNoise.cms");
 	computenoise.use();
 	srand(clock());
+
+	//Random Seed
 	float seed = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 20)); //random float between 0 and 20
 	cout << "SEED: " << seed << endl;
 	computenoise.setFloat("seed", seed);
+
 	glBindImageTexture(0, noisetexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	glDispatchCompute((GLuint)64, (GLuint)16, 1);
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
