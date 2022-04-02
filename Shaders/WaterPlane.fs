@@ -45,6 +45,7 @@ void main(){
 
     vec4 result = vec4(vec3(mix(reflect,refract,fresnel)),1.0);
     result = result + vec4(Highlights(normal,viewDir),1.0);
+    result += vec4(0.0,0.21,0.2,1.0);
     FragColor = result;
 }
 
