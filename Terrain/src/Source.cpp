@@ -173,7 +173,7 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, WaterFBO);
 		//Clean back buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//Enable Depth
+		//Enable Depths
 		glEnable(GL_DEPTH_TEST);
 		//Render Scene to fill FBO
 		terrain.RenderTerrain();
