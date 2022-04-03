@@ -17,6 +17,7 @@ out vec3 posTC[] ;
 out vec2 TexCoordsTC[];
 
 uniform vec3 viewPos;
+uniform int terrainmode;
 float GetTessLevel(float distance0, float distance1);
 void main()
 {
@@ -49,15 +50,25 @@ void main()
 float GetTessLevel(float distance0, float distance1){
     float avg = (distance0+distance1)/2;
 
-    if(avg < 75){
-        return 15;    
-    }else if(avg < 80){
-        return 13; 
-    }else if(avg < 100){
-        return 10; 
-    }else if(avg < 150){
-        return 8; 
+    if(terrainmode == 1){
+        if(avg < 150){
+            return 15;    
+        }else if(avg < 200){
+            return 13; 
+        }else if(avg < 250){
+            return 10; 
+        }else if(avg < 300){
+            return 8; 
+        }else{
+            return 5; 
+        }
     }else{
-        return 5; 
+        if(avg < 150){
+            return 3;    
+        }else if(avg < 200){
+            return 2; 
+        }else{
+            return 1;
+        }
     }
 }

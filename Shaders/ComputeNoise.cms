@@ -21,7 +21,7 @@ void main(){
 
 
 float hash(float n){
-    return fract(sin(n)*753.543123*seed);
+    return fract(sin(n)*seed); //753.543123
 }
 
 float snoise(vec3 x){

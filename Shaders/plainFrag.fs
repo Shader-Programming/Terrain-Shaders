@@ -26,6 +26,7 @@ uniform vec3 viewPos ;
 uniform float scale;
 uniform vec3 sky;
 uniform sampler2D normalmap;
+uniform int terrainmode;
 
 uniform sampler2D rocktexture;
 uniform sampler2D grasstexture;
@@ -41,18 +42,25 @@ void main()
     float height = posGS.y*scale;
     float flatness = norm.y*scale;
     vec3 heightcol = vec3(0,0,0);
+    vec3 topcol = vec3(0);
+    vec3 lowcol = vec3(0);
 
-    vec3 topcol = TriPlaner(rocktexture);
-    vec3 lowcol = TriPlaner(grasstexture);
+    if(terrainmode == 1){
+        topcol = TriPlaner(rocktexture);
+        lowcol = TriPlaner(grasstexture);
 
-    //if(height > 1.0){
-    //    heightcol = vec3(mix(medcol, topcol,smoothstep(1.0,1.8,height)).rgb);  
-    //}else{
-    //    heightcol = vec3(mix(lowcol, medcol,smoothstep(0.4,1.0,height)).rgb);       
-    //}
-    heightcol = vec3(mix(lowcol, topcol,smoothstep(0.5,1.0,height)).rgb); 
-    if(flatness > 75){
-        heightcol = vec3(mix(topcol, lowcol,smoothstep(75,80,flatness)).rgb); 
+        heightcol = vec3(mix(lowcol, topcol,smoothstep(0.5,1.0,height)).rgb); 
+        if(flatness > 75){
+            heightcol = vec3(mix(topcol, lowcol,smoothstep(75,80,flatness)).rgb); 
+        }
+    }else{
+        topcol = vec3(0.60,0.46,0.32);
+        lowcol = vec3(0.33,0.49,0.27);
+
+        heightcol = vec3(mix(lowcol, topcol,smoothstep(0.5,1.0,height)).rgb); 
+        if(flatness > 3){
+            heightcol = vec3(mix(topcol, lowcol,smoothstep(3,50,flatness)).rgb); 
+        }
     }
 
     //Result

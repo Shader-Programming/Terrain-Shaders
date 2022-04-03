@@ -14,18 +14,23 @@ out vec2 TexCoordsGS;
 out float visibilityGS;
 
 uniform vec4 clipplane;
+uniform int terrainmode;
 
 vec3 GetSurfaceNormal();
 
 void main()
 {
-   //normGS = GetSurfaceNormal();
+   if(terrainmode == -1){
+       normGS = GetSurfaceNormal();
+   }
    for(int i = 0 ; i < 3; i++)
    {
       gl_Position = gl_in[i].gl_Position ;
       posGS = posES[i] ;  
       TexCoordsGS = TexCoordsES[i];
-      normGS = normES[i];
+      if(terrainmode == 1){
+           normGS = normES[i];
+      }
       visibilityGS = visibilityES[i];
       gl_ClipDistance[0] = dot(clipplane,vec4(posES[i],1.0));
       EmitVertex() ;

@@ -19,6 +19,7 @@ out vec2 TexCoordsTC[];
 out vec3 normTC[];
 
 uniform vec3 camerapos;
+uniform int terrainmode;
 float GetTessLevel(float distance0, float distance1);
 void main()
 {
@@ -52,15 +53,27 @@ void main()
 float GetTessLevel(float distance0, float distance1){
     float avg = (distance0+distance1)/2;
 
-    if(avg < 75){
-        return 8;    
-    }else if(avg < 80){
-        return 6; 
-    }else if(avg < 100){
-        return 4; 
-    }else if(avg < 150){
-        return 2; 
+    if(terrainmode == 1){
+        if(avg < 75){
+            return 8;    
+        }else if(avg < 80){
+            return 6; 
+        }else if(avg < 100){
+            return 4; 
+        }else if(avg < 150){
+            return 2; 
+        }else{
+            return 1; 
+        }
     }else{
-        return 1; 
+        if(avg < 75){
+            return 8;    
+        }else if(avg < 80){
+            return 6; 
+        }else if(avg < 100){
+            return 4; 
+        }else{
+            return 2;
+        }
     }
 }
