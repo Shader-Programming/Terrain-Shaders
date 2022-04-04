@@ -50,5 +50,5 @@ float noise(vec3 position, int octaves){
         amplitude /= 2; //2
         maxamplitude += amplitude;
     }
-    return (total/maxamplitude);
+    return (total/maxamplitude)*100;
 }

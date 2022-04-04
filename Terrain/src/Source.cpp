@@ -121,7 +121,7 @@ int main()
 	//Terrain Constructor ; number of grids in width, number of grids in height, gridSize
 	Terrain terrain(50, 50,10);
 	terrain.AssignTerrainTextures("..\\Resources\\rock\\diffuse.jpg", "..\\Resources\\grass\\diffuse.jpg");
-	TextureController::AssignTexture(noisetexture, terrain.shader, "noise");
+	TextureController::AssignTexture(noisetexture, terrain.shader, "noisemap");
 	TextureController::AssignTexture(normalmap, terrain.shader, "normalmap");
 	terrainVAO = terrain.getVAO();
 	terrain.heightmap = noisetexture;
@@ -223,6 +223,7 @@ int main()
 		water.shader.setFloat("screenH", SCR_HEIGHT);
 		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA, waterCA);
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

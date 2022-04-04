@@ -14,9 +14,8 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float scale;
 uniform vec3 viewPos;
+uniform sampler2D noisemap;
 uniform sampler2D normalmap;
-
-uniform sampler2D noise;
 
 // read in vector arrays from previous shader
 in vec3 posTC[] ;
@@ -37,17 +36,8 @@ void main()
 
 
    //Noise Height Mapping and Normals
-   float height = texture(noise,TexCoordsES).r;
-   posES.y = height*scale;
-
-   float right = (textureOffset(noise,TexCoordsES,ivec2(1,0)).r)*scale;
-   float left = (textureOffset(noise,TexCoordsES,ivec2(-1,0)).r)*scale;
-   float up = (textureOffset(noise,TexCoordsES,ivec2(0,1)).r)*scale;
-   float down = (textureOffset(noise,TexCoordsES,ivec2(0,-1)).r)*scale;
-
-   float lr = left-right;
-   float ud = up-down;
-   normES = normalize(vec3(lr,2.0,ud));
+   posES.y = texture(noisemap,TexCoordsES).r;
+   normES = texture(normalmap,TexCoordsES).rgb;
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
    gl_Position = projection * view * vec4(posES, 1.0); 

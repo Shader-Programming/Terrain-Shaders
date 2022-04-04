@@ -15,7 +15,7 @@ void main(){
 
 	vec3 normals = CDM(uvcoords);
 
-	vec4 pixel = vec4(normals,perlin);
+	vec4 pixel = vec4(normals.r,normals.g,normals.b,perlin.y);
 	imageStore(normalmap,pixelcoords,pixel);
 }
 
