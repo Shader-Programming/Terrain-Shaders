@@ -21,14 +21,15 @@ void Skybox::CreateSkybox() {
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, facedata);
 }
 
 void Skybox::RenderSkybox() {
 	shader.use();
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(SkyboxVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, facedata);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	glDepthMask(GL_TRUE);
 }

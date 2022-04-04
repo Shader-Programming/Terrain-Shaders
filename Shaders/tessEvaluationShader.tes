@@ -37,7 +37,28 @@ void main()
 
    //Noise Height Mapping and Normals
    posES.y = texture(noisemap,TexCoordsES).r;
-   normES = texture(normalmap,TexCoordsES).rgb;
+   //normES = texture(normalmap,TexCoordsES).rgb;
+
+   //CDM (TO GET RID OF LATER)
+    float right = (textureOffset(noisemap,TexCoordsES,ivec2(1.0,0)).r)*scale;
+    float left = (textureOffset(noisemap,TexCoordsES,ivec2(-1.0,0)).r)*scale;
+    float up = (textureOffset(noisemap,TexCoordsES,ivec2(0,1.0)).r)*scale;
+    float down = (textureOffset(noisemap,TexCoordsES,ivec2(0,-1.0)).r)*scale;
+
+    //Diagonal CDM
+    float topright = (textureOffset(noisemap, TexCoordsES, ivec2(1.0, 1.0)).r) * scale;
+    float topleft = (textureOffset(noisemap, TexCoordsES, ivec2(-1.0, 1.0)).r) * scale;
+    float bottomright = (textureOffset(noisemap, TexCoordsES, ivec2(1.0, -1.0)).r) * scale;
+    float bottomleft = (textureOffset(noisemap, TexCoordsES, ivec2(-1.0, -1.0)).r) * scale;
+
+    float lr = left-right;
+    float ud = up-down;
+    float diag1 = topleft - bottomright;
+    float diag2 = topright - bottomleft;
+
+    vec3 normals = normalize(vec3(lr,2.0,ud));
+    vec3 diagnormals = normalize(vec3(diag1,2.0,diag2));
+    normES = normalize(normals+diagnormals);
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
    gl_Position = projection * view * vec4(posES, 1.0); 

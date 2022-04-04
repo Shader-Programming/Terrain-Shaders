@@ -50,8 +50,8 @@ void main()
         lowcol = TriPlaner(grasstexture);
 
         heightcol = vec3(mix(lowcol, topcol,smoothstep(0.5,1.0,height)).rgb); 
-        if(flatness > 75){
-            heightcol = vec3(mix(topcol, lowcol,smoothstep(75,80,flatness)).rgb); 
+        if(flatness > 1){
+            heightcol = vec3(mix(topcol, lowcol,smoothstep(1,2,flatness)).rgb); 
         }
     }else{
         topcol = vec3(0.60,0.46,0.32);

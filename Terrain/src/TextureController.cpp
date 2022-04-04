@@ -93,7 +93,7 @@ unsigned int TextureController::LoadCubeMap(std::vector<std::string> faces) {
 	return textureID;
 }
 
-void TextureController::AssignTexture(unsigned int texture, Shader shader, std::string name) {
+void TextureController::AssignTexture(unsigned int texture, Shader& shader, std::string name, int textureunit) {
 	shader.use();
 	glActiveTexture(GL_TEXTURE0 + texture);
 	glBindTexture(GL_TEXTURE_2D, texture);

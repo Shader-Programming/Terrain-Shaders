@@ -57,8 +57,6 @@ void Water::RenderPlane(unsigned int& reflection, unsigned int& refraction) {
 	glBindTexture(GL_TEXTURE_2D, reflection);
 	glActiveTexture(GL_TEXTURE0 + refraction);
 	glBindTexture(GL_TEXTURE_2D, refraction);
-	glActiveTexture(GL_TEXTURE6);
-	glBindTexture(GL_TEXTURE_2D, 6);
 
 	glm::mat4 model = glm::mat4(1.0);
 	shader.setMat4("model", model);

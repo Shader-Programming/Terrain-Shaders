@@ -111,14 +111,12 @@ void Terrain::AssignTerrainTextures(char const* path1, char const* path2) {
 	tex1 = TextureController::LoadTexture(path1);
 	tex2 = TextureController::LoadTexture(path2);
 
-	TextureController::AssignTexture(tex1, shader, "rocktexture");
-	TextureController::AssignTexture(tex2, shader, "grasstexture");
+	TextureController::AssignTexture(tex1, shader, "rocktexture" , 0);
+	TextureController::AssignTexture(tex2, shader, "grasstexture", 1);
 }
 
 void Terrain::RenderTerrain() {
 	shader.use();
-	glActiveTexture(GL_TEXTURE0 + heightmap);
-	glBindTexture(GL_TEXTURE_2D, heightmap);
 	glm::mat4 model = glm::mat4(1.0);
 	shader.setMat4("model", model);
 	glBindVertexArray(VAO);
