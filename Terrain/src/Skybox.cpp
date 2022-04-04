@@ -8,7 +8,8 @@ Skybox::Skybox() {
 
 void Skybox::CreateSkybox() {
     LoadSkybox();
-    int skyboxsize = 100;
+    int skyboxsize = 250;
+    int offset = 250;
     float vertices[] = {
         // positions          
         -skyboxsize,  skyboxsize, -skyboxsize,

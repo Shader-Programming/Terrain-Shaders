@@ -38,7 +38,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void SetTerrainUniforms(Shader& shader);
 void SetWaterUniforms(Shader& shader);
-void SetContinuousUniforms(Shader& terrain, Shader& water);
+void SetContinuousUniforms(Shader& terrain, Shader& water, Shader& skybox);
 void CreateFBO(unsigned int& FBO, unsigned int& colourattatchment, unsigned int& depthattatchment);
 
 // camera
@@ -164,7 +164,7 @@ int main()
 		float storedpitch = camera.Pitch;
 
 		//Set Global Frame Uniforms
-		SetContinuousUniforms(terrain.shader, water.shader);
+		SetContinuousUniforms(terrain.shader, water.shader, skybox.shader);
 
 		//REFLECTION
 		terrain.shader.use();
@@ -295,9 +295,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetTerrainUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 1.0;
-	const float green = 1.0;
-	const float blue = 1.0;
+	const float red = 0.74;
+	const float green = 0.8;
+	const float blue = 0.8;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
@@ -318,9 +318,9 @@ void SetTerrainUniforms(Shader& shader) {
 
 void SetWaterUniforms(Shader& shader) {
 	shader.use();
-	const float red = 1.0;
-	const float green = 1.0;
-	const float blue = 1.0;
+	const float red = 0.74;
+	const float green = 0.8;
+	const float blue = 0.8;
 	glClearColor(red, green, blue, 1.0);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
 	shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
@@ -336,7 +336,7 @@ void SetWaterUniforms(Shader& shader) {
 	shader.setFloat("waves[1].speed", 1.5);
 }
 
-void SetContinuousUniforms(Shader& terrain, Shader& water) {
+void SetContinuousUniforms(Shader& terrain, Shader& water, Shader& skybox) {
 	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1200.0f);
 	glm::mat4 view = camera.GetViewMatrix();
 
@@ -350,6 +350,10 @@ void SetContinuousUniforms(Shader& terrain, Shader& water) {
 	water.setInt("terrainmode", terrainmode);
 	water.setMat4("projection", projection);
 	water.setMat4("view", view);
+
+	skybox.use();
+	skybox.setMat4("projection", projection);
+	skybox.setMat4("view", view);
 }
 
 void CreateFBO(unsigned int& FBO, unsigned int& colourattatchment, unsigned int& depthattatchment) {
