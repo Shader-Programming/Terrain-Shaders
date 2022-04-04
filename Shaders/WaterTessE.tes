@@ -56,7 +56,7 @@ void main()
    gl_Position = projection * view * vec4(posMod, 1.0); 
 
    //fog stuff
-   float G = 1.0;
+   float G = 0.8;
    float density = 0.002;
 
    float dist = distance(camerapos,posES);

@@ -179,8 +179,8 @@ int main()
 		//Render Scene to fill FBO
 		camera.Position = glm::vec3(storedpos.x, 70, storedpos.z);
 		camera.Pitch = storedpitch * -1;
-		terrain.RenderTerrain();
 		skybox.RenderSkybox();
+		terrain.RenderTerrain();
 
 
 		//Reset Camera
@@ -212,6 +212,7 @@ int main()
 		//Render Scene to fill FBO
 		glEnable(GL_CULL_FACE);
 		//Render Everything
+		skybox.RenderSkybox();
 		terrain.RenderTerrain();
 		glDisable(GL_CULL_FACE);
 
@@ -222,8 +223,6 @@ int main()
 		water.shader.setFloat("screenH", SCR_HEIGHT);
 		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA, waterCA);
-
-		skybox.RenderSkybox();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -353,7 +352,7 @@ void SetContinuousUniforms(Shader& terrain, Shader& water, Shader& skybox) {
 
 	skybox.use();
 	skybox.setMat4("projection", projection);
-	skybox.setMat4("view", view);
+	skybox.setMat4("view", glm::mat4(glm::mat3(camera.GetViewMatrix())));
 }
 
 void CreateFBO(unsigned int& FBO, unsigned int& colourattatchment, unsigned int& depthattatchment) {
