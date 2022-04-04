@@ -128,6 +128,7 @@
     <ClInclude Include="include\PerlinNoise.h" />
     <ClInclude Include="include\Quad.h" />
     <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\Skybox.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Terrain.h" />
     <ClInclude Include="include\TextureController.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="src\PerlinNoise.cpp" />
     <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
@@ -156,6 +158,8 @@
     <None Include="..\Shaders\plainVert.vs" />
     <None Include="..\Shaders\Quad.fs" />
     <None Include="..\Shaders\Quad.vs" />
+    <None Include="..\Shaders\Skybox.fs" />
+    <None Include="..\Shaders\Skybox.vs" />
     <None Include="..\Shaders\tessControlShader.tcs" />
     <None Include="..\Shaders\tessEvaluationShader.tes" />
     <None Include="..\Shaders\WaterGeo.gs" />

@@ -48,6 +48,12 @@
     <ClInclude Include="include\Water.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\NormalMapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -86,6 +92,12 @@
     <ClCompile Include="src\Water.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\NormalMapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp-vc140-mt.dll" />
@@ -103,5 +115,7 @@
     <None Include="..\Shaders\WaterGeo.gs" />
     <None Include="..\Shaders\WaterTessC.tcs" />
     <None Include="..\Shaders\WaterTessE.tes" />
+    <None Include="..\Shaders\Skybox.fs" />
+    <None Include="..\Shaders\Skybox.vs" />
   </ItemGroup>
 </Project>

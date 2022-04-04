@@ -15,6 +15,7 @@
 #include "TextureController.h"
 #include "Quad.h"
 #include "Water.h"
+#include "Skybox.h"
 
 #include<string>
 #include <iostream>
@@ -124,6 +125,7 @@ int main()
 	TextureController::AssignTexture(normalmap, terrain.shader, "normalmap");
 	terrainVAO = terrain.getVAO();
 	terrain.heightmap = noisetexture;
+	SetTerrainUniforms(terrain.shader);
 
 	//Quad for 2D
 	Quad quad;
@@ -140,89 +142,96 @@ int main()
 	TextureController::AssignTexture(waterNormals, water.shader, "normalmap");
 	TextureController::AssignTexture(waterDuDv, water.shader, "DuDv");
 	SetWaterUniforms(water.shader);
-SetTerrainUniforms(terrain.shader);
 
-//Clip Plane
-glEnable(GL_CLIP_DISTANCE0);
+	//Skybox
+	Skybox skybox;
+	skybox.CreateSkybox();
 
-CreateFBO(MountainFBO, mountainCA, mountainDA);
-CreateFBO(WaterFBO, waterCA, waterDA);
+	//Clip Plane
+	glEnable(GL_CLIP_DISTANCE0);
 
-while (!glfwWindowShouldClose(window))
-{
-	float currentFrame = glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
-	processInput(window);
+	CreateFBO(MountainFBO, mountainCA, mountainDA);
+	CreateFBO(WaterFBO, waterCA, waterDA);
 
-	glm::vec3 storedpos = camera.Position;
-	float storedpitch = camera.Pitch;
+	while (!glfwWindowShouldClose(window))
+	{
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+		processInput(window);
 
-	//Set Global Frame Uniforms
-	SetContinuousUniforms(terrain.shader, water.shader);
+		glm::vec3 storedpos = camera.Position;
+		float storedpitch = camera.Pitch;
 
-	//REFLECTION
-	terrain.shader.use();
-	glm::vec4 plane = glm::vec4(0, 1, 0, -waterlevel);
-	terrain.shader.setVec4("clipplane", plane);
+		//Set Global Frame Uniforms
+		SetContinuousUniforms(terrain.shader, water.shader);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
-	//Clean back buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Enable Depth
-	glEnable(GL_DEPTH_TEST);
-	//Render Scene to fill FBO
-	camera.Position = glm::vec3(storedpos.x, 70, storedpos.z);
-	camera.Pitch = storedpitch * -1;
-	terrain.RenderTerrain();
+		//REFLECTION
+		terrain.shader.use();
+		glm::vec4 plane = glm::vec4(0, 1, 0, -waterlevel);
+		terrain.shader.setVec4("clipplane", plane);
 
-	//Reset Camera
-	camera.Position = glm::vec3(storedpos.x, storedpos.y, storedpos.z);
-	camera.Pitch = storedpitch;
-
-	//REFRACTION
-	terrain.shader.use();
-	plane = glm::vec4(0, -1, 0, waterlevel);
-	terrain.shader.setVec4("clipplane", plane);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, WaterFBO);
-	//Clean back buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Enable Depth
-	glEnable(GL_DEPTH_TEST);
-	//Render Scene to fill FBO
-	terrain.RenderTerrain();
+		glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
+		//Clean back buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Enable Depth
+		glEnable(GL_DEPTH_TEST);
+		//Render Scene to fill FBO
+		camera.Position = glm::vec3(storedpos.x, 70, storedpos.z);
+		camera.Pitch = storedpitch * -1;
+		terrain.RenderTerrain();
+		skybox.RenderSkybox();
 
 
+		//Reset Camera
+		camera.Position = glm::vec3(storedpos.x, storedpos.y, storedpos.z);
+		camera.Pitch = storedpitch;
 
 
-	//Now use default FBO
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//Clean back buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Enable Depth
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CLIP_DISTANCE0);
-	//Render Scene to fill FBO
-	glEnable(GL_CULL_FACE);
-	//Render Everything
-	terrain.RenderTerrain();
-	glDisable(GL_CULL_FACE);
+		//REFRACTION
+		terrain.shader.use();
+		plane = glm::vec4(0, -1, 0, waterlevel);
+		terrain.shader.setVec4("clipplane", plane);
 
-	//Water Uniforms
-	water.shader.use();
-	water.shader.setVec3("camerapos", camera.Position);
-	water.shader.setFloat("screenW", SCR_WIDTH);
-	water.shader.setFloat("screenH", SCR_HEIGHT);
-	water.shader.setFloat("time", glfwGetTime());
-	water.RenderPlane(mountainCA, waterCA);
-	glfwSwapBuffers(window);
-	glfwPollEvents();
-}
+		glBindFramebuffer(GL_FRAMEBUFFER, WaterFBO);
+		//Clean back buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Enable Depth
+		glEnable(GL_DEPTH_TEST);
+		//Render Scene to fill FBO
+		terrain.RenderTerrain();
 
 
-glfwTerminate();
-return 0;
+		//Now use default FBO
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//Clean back buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Enable Depth
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_CLIP_DISTANCE0);
+		//Render Scene to fill FBO
+		glEnable(GL_CULL_FACE);
+		//Render Everything
+		terrain.RenderTerrain();
+		glDisable(GL_CULL_FACE);
+
+		//Water Uniforms
+		water.shader.use();
+		water.shader.setVec3("camerapos", camera.Position);
+		water.shader.setFloat("screenW", SCR_WIDTH);
+		water.shader.setFloat("screenH", SCR_HEIGHT);
+		water.shader.setFloat("time", glfwGetTime());
+		water.RenderPlane(mountainCA, waterCA);
+
+		skybox.RenderSkybox();
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+
+	glfwTerminate();
+	return 0;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
