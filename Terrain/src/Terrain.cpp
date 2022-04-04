@@ -111,8 +111,8 @@ void Terrain::AssignTerrainTextures(char const* path1, char const* path2) {
 	tex1 = TextureController::LoadTexture(path1);
 	tex2 = TextureController::LoadTexture(path2);
 
-	TextureController::AssignTexture(tex1, shader, "rocktexture" , 0);
-	TextureController::AssignTexture(tex2, shader, "grasstexture", 1);
+	TextureController::AssignTexture(tex1, shader, "rocktexture");
+	TextureController::AssignTexture(tex2, shader, "grasstexture");
 }
 
 void Terrain::RenderTerrain() {
