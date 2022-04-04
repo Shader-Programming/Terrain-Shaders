@@ -54,7 +54,7 @@ void main()
 
    //fog stuff
    float G = 1.0;
-   float density = 0.002;
+   float density = 0.001;
 
    float dist = distance(viewPos,posES);
    visibilityES = exp(-pow((dist*density),G));

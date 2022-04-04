@@ -22,6 +22,7 @@ uniform vec3 sky;
 uniform int terrainmode;
 
 vec3 Highlights(vec3 norms,vec3 viewDir);
+vec3 Diffuse(vec3 norms, vec3 viewDir);
 
 float wavestrength = 0.02;
 vec3 lightcolour = vec3(1.0,1.0,1.0);
@@ -51,7 +52,8 @@ void main(){
         result = result + vec4(Highlights(normal,viewDir),1.0);
         result += vec4(0.0,0.21,0.2,1.0);
     }else{
-        result = vec4(0.0,0.85,0.8,0.1) + vec4(Highlights(normGS,viewDir),1.0);
+        result = vec4(0.0,0.85,0.8,1.0);
+        result += vec4(Diffuse(normGS,viewDir),1.0);
     }
     FragColor = result;
 }
@@ -61,10 +63,11 @@ vec3 Highlights(vec3 norms,vec3 viewDir){
     vec3 halfwaydir = normalize(lightdir+viewDir);
     float spec = pow(max(dot(norms,halfwaydir),0.0),1);
     vec3 specular = spec*lightcolour;
-    //Phong
-    //vec3 reflect = reflect(-lightdir,norms);
-    //float spec = pow(max(dot(viewDir,reflect),0.0),16);  
-    //vec3 specular = strength*spec*lightcolour;
-
     return specular;
+}
+
+vec3 Diffuse(vec3 norms, vec3 viewDir){
+    float diff = clamp(dot(norms,lightdir),0.0,1.0);
+    vec3 diffuse = (diff*lightcolour)/5;
+    return diffuse;
 }

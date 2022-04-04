@@ -286,9 +286,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void SetTerrainUniforms(Shader& shader) {
 	shader.use();
 
-	const float red = 0.53;
-	const float green = 0.81;
-	const float blue = 0.92;
+	const float red = 1.0;
+	const float green = 1.0;
+	const float blue = 1.0;
 
 	glClearColor(red, green, blue, 1.0);
 	//light properties
@@ -309,9 +309,9 @@ void SetTerrainUniforms(Shader& shader) {
 
 void SetWaterUniforms(Shader& shader) {
 	shader.use();
-	const float red = 0.53;
-	const float green = 0.81;
-	const float blue = 0.92;
+	const float red = 1.0;
+	const float green = 1.0;
+	const float blue = 1.0;
 	glClearColor(red, green, blue, 1.0);
 	shader.setVec3("sky", glm::vec3(red, green, blue));
 	shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
