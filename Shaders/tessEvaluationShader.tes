@@ -21,6 +21,22 @@ uniform sampler2D normalmap;
 in vec3 posTC[] ;
 in vec2 TexCoordsTC[];
 
+struct OutputPatch
+{
+    vec3 WorldPos_B030;
+    vec3 WorldPos_B021;
+    vec3 WorldPos_B012;
+    vec3 WorldPos_B003;
+    vec3 WorldPos_B102;
+    vec3 WorldPos_B201;
+    vec3 WorldPos_B300;
+    vec3 WorldPos_B210;
+    vec3 WorldPos_B120;
+    vec3 WorldPos_B111;
+};
+
+in patch OutputPatch oPatch;
+
 // pass along the interpolated values
 out vec3 posES ;
 out vec2 TexCoordsES;
@@ -29,9 +45,32 @@ out float visibilityES;
 
 void main()
 {
+    float u = gl_TessCoord.x;
+    float v = gl_TessCoord.y;
+    float w = gl_TessCoord.z;
+
+    float uPow3 = pow(u, 3);
+    float vPow3 = pow(v, 3);
+    float wPow3 = pow(w, 3);
+    float uPow2 = pow(u, 2);
+    float vPow2 = pow(v, 2);
+    float wPow2 = pow(w, 2);
+
+
+    posES = oPatch.WorldPos_B300 * wPow3 +
+                oPatch.WorldPos_B030 * uPow3 +
+                oPatch.WorldPos_B003 * vPow3 +
+                oPatch.WorldPos_B210 * 3.0 * wPow2 * u +
+                oPatch.WorldPos_B120 * 3.0 * w * uPow2 +
+                oPatch.WorldPos_B201 * 3.0 * wPow2 * v +
+                oPatch.WorldPos_B021 * 3.0 * uPow2 * v +
+                oPatch.WorldPos_B102 * 3.0 * w * vPow2 +
+                oPatch.WorldPos_B012 * 3.0 * u * vPow2 +
+                oPatch.WorldPos_B111 * 6.0 * w * u * v;
+
     // interpolate the normal and xyz position using the linear interpolation function
     // use 3D because they are in three dimensions; 2D also included for uv texture coordinates
-   posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
+   //posES = interpolate3D(posTC[0], posTC[1], posTC[2]) ;
    TexCoordsES = interpolate2D(TexCoordsTC[0], TexCoordsTC[1], TexCoordsTC[2]) ;
 
 
