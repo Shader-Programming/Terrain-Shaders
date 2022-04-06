@@ -147,9 +147,6 @@ int main()
 	Skybox skybox;
 	skybox.CreateSkybox();
 
-	//Clip Plane
-	glEnable(GL_CLIP_DISTANCE0);
-
 	CreateFBO(MountainFBO, mountainCA, mountainDA);
 	CreateFBO(WaterFBO, waterCA, waterDA);
 
@@ -167,8 +164,9 @@ int main()
 		SetContinuousUniforms(terrain.shader, water.shader, skybox.shader);
 
 		//REFLECTION
+		glEnable(GL_CLIP_DISTANCE0);
 		terrain.shader.use();
-		glm::vec4 plane = glm::vec4(0, 1, 0, -waterlevel);
+		glm::vec4 plane = glm::vec4(0, 1, 0, waterlevel);
 		terrain.shader.setVec4("clipplane", plane);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, MountainFBO);
@@ -177,7 +175,7 @@ int main()
 		//Enable Depth
 		glEnable(GL_DEPTH_TEST);
 		//Render Scene to fill FBO
-		camera.Position = glm::vec3(storedpos.x, 70, storedpos.z);
+		camera.Position = glm::vec3(storedpos.x, waterlevel, storedpos.z);
 		camera.Pitch = storedpitch * -1;
 		skybox.RenderSkybox();
 		terrain.RenderTerrain();
@@ -224,6 +222,7 @@ int main()
 		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA, waterCA);
 
+		quad.RenderQuad(normalmap);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -326,14 +325,14 @@ void SetWaterUniforms(Shader& shader) {
 	shader.setVec3("lightdir", glm::vec3(-1.0f, -1.0f, -1.0f));
 
 	shader.setFloat("waves[0].amp", 1);
-	shader.setVec2("waves[0].wavedir", glm::vec2(1.0, 1.0));
+	shader.setVec2("waves[0].wavedir", glm::vec2(1.0, 0.0));
 	shader.setFloat("waves[0].crestdist", 50);
 	shader.setFloat("waves[0].speed", 0.5);
 
 	shader.setFloat("waves[1].amp", 1.5);
-	shader.setVec2("waves[1].wavedir", glm::vec2(1.0, 1.0));
-	shader.setFloat("waves[1].crestdist", 50);
-	shader.setFloat("waves[1].speed", 1.5);
+	shader.setVec2("waves[1].wavedir", glm::vec2(0.0, 1.0));
+	shader.setFloat("waves[1].crestdist", 70);
+	shader.setFloat("waves[1].speed", 1);
 }
 
 void SetContinuousUniforms(Shader& terrain, Shader& water, Shader& skybox) {

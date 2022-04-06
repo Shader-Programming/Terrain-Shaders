@@ -22,7 +22,7 @@ struct Wave{
     float speed;
 };
 
-#define NR_WAVE_COUNT 1
+#define NR_WAVE_COUNT 2
 uniform Wave waves[NR_WAVE_COUNT];
 
 
@@ -80,7 +80,7 @@ vec3 CalculateGerstnerWaves(vec3 V, Wave wave){
     float wavelength = (2*3.14152)/wave.crestdist;
     float phasespd = sqrt(9.8)/wavelength; //phase speed
 
-    float f = V.y+(dot(V.xy,wave.wavedir)-phasespd*wave.speed)*wavelength;
+    float f = V.y+(dot(V.xz,wave.wavedir)-phasespd*wave.speed)*wavelength;
     V.x += wave.wavedir.x*(wave.amp*cos(f));
     V.y += wave.amp*sin(f);
     V.z += wave.wavedir.y*(wave.amp*cos(f));

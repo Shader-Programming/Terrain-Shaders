@@ -95,7 +95,7 @@ void main()
     vec3 normals = normalize(vec3(lr,2.0,ud));
     vec3 diagnormals = normalize(vec3(diag1,2.0,diag2));
     normES = normalize(normals+diagnormals);
-    //normES = vec3(texture(normalmap,TexCoordsES).rgb)/scale;
+    //normES = vec3(texture(normalmap,TexCoordsES).rgb);
 
 
    // transform vertex to clip space  - NOTE: WE NEED TO DO IT HERE NOW and not in vertex shader
