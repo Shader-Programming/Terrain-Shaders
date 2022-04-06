@@ -122,9 +122,7 @@ int main()
 	Terrain terrain(50, 50,10);
 	terrain.AssignTerrainTextures("..\\Resources\\rock\\diffuse.jpg", "..\\Resources\\grass\\diffuse.jpg");
 	TextureController::AssignTexture(noisetexture, terrain.shader, "noisemap");
-	TextureController::AssignTexture(normalmap, terrain.shader, "normalmap");
 	terrainVAO = terrain.getVAO();
-	terrain.heightmap = noisetexture;
 	SetTerrainUniforms(terrain.shader);
 
 	//Quad for 2D
@@ -149,6 +147,8 @@ int main()
 
 	CreateFBO(MountainFBO, mountainCA, mountainDA);
 	CreateFBO(WaterFBO, waterCA, waterDA);
+
+	TextureController::AssignTexture(normalmap, terrain.shader, "normalmap");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -221,8 +221,6 @@ int main()
 		water.shader.setFloat("screenH", SCR_HEIGHT);
 		water.shader.setFloat("time", glfwGetTime());
 		water.RenderPlane(mountainCA, waterCA);
-
-		quad.RenderQuad(normalmap);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

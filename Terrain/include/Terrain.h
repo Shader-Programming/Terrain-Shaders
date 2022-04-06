@@ -20,7 +20,6 @@ public:
 	void RenderTerrain();
 	int getSize();
 	Shader shader = Shader("..\\shaders\\plainVert.vs", "..\\shaders\\plainFrag.fs", "..\\shaders\\Norms.gs", "..\\shaders\\tessControlShader.tcs", "..\\shaders\\tessEvaluationShader.tes");
-	unsigned int heightmap;	
 private:
 	std::vector<float> vertices;
 	unsigned int VAO, VBO;
