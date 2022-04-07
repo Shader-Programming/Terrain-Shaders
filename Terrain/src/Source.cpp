@@ -201,12 +201,12 @@ int main()
 
 
 		//Now use default FBO
+		glDisable(GL_CLIP_DISTANCE0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//Clean back buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//Enable Depth
 		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_CLIP_DISTANCE0);
 		//Render Scene to fill FBO
 		glEnable(GL_CULL_FACE);
 		//Render Everything
