@@ -18,7 +18,5 @@ void main()
 {
     TexCoordsVS = aUV;
     posVS = (model * vec4(aPos, 1.0)).xyz; 
-    
-    gl_Position = projection * view * model*vec4(aPos,1.0);
     normVS = aNormals ;
 }
